@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible non-sensitive defect
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Remove secrets, prompts, customer data, and private paths before submitting.
+  - type: input
+    id: version
+    attributes: {label: Version, placeholder: "0.1.0"}
+    validations: {required: true}
+  - type: input
+    id: environment
+    attributes: {label: Environment, description: Operating system and Python version}
+    validations: {required: true}
+  - type: textarea
+    id: reproduce
+    attributes: {label: Reproduction, description: Minimal synthetic event and exact command}
+    validations: {required: true}
+  - type: textarea
+    id: result
+    attributes: {label: Expected and actual result}
+    validations: {required: true}

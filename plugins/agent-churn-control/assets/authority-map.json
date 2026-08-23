@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0",
+  "may": ["classify_local_action", "emit_advisory", "record_content_free_receipt", "reuse_valid_local_evidence", "gate_duplicate_local_helper_execution", "validate_promotion_readiness"],
+  "may_not": ["terminate_overall_task", "publish", "install", "spend", "change_credentials", "change_permissions", "change_scopes", "perform_external_action", "recruit_participants"]
+}

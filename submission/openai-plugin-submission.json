@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "submission_type": "skills_only",
+  "plugin_name": "Agent Churn Control",
+  "package_name": "agent-churn-control",
+  "version": "0.1.0",
+  "publisher": "Orbral",
+  "category": "Developer Tools",
+  "short_description": "Stop duplicate agent work",
+  "long_description": "Stop agents from rerunning equivalent tests, reviews, retries, and tool calls when accepted evidence already exists. Agent Churn Control runs locally, reuses content-free receipts, permits changed work through typed invalidation, and keeps rate-limit signals advisory—helping preserve capacity without weakening final verification. No account, API key, telemetry, network call, or hosted service.",
+  "website_url": "https://github.com/SpannDaMan/agent-churn-control",
+  "support_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/SUPPORT.md",
+  "privacy_policy_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
+  "terms_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
+  "starter_prompts": [
+    "Check this local action; show the pending reservation or missing identity fields.",
+    "Reuse accepted evidence and show what still needs verification.",
+    "Audit this agent run for repeated tests, reviews, retries, and polling."
+  ],
+  "capabilities": ["Local", "Evidence reuse", "Duplicate-work control", "No credentials"],
+  "positive_tests": [
+    {"id":"POS-1","prompt":"Check this local action; show the pending reservation or missing identity fields.","expected_behavior":"Build the local action identity and reserve one complete first action without claiming that it passed.","expected_result_shape":"A pending bypass reservation or a precise list of missing identity fields."},
+    {"id":"POS-2","prompt":"Reuse accepted evidence and show what still needs verification.","expected_behavior":"Identify equivalent accepted evidence, block only the duplicate local action, and preserve any distinct final verification.","expected_result_shape":"A reuse_prior_evidence decision with content-free receipt references."},
+    {"id":"POS-3","prompt":"This candidate changed. Validate the invalidation and let me rerun the affected check.","expected_behavior":"Require canonical prior-receipt and action-scope binding, then allow one re-execution only when the typed invalidation is valid and unconsumed.","expected_result_shape":"An allow_reexecution or specific invalidation rejection."}
+  ],
+  "negative_tests": [
+    {"id":"NEG-1","prompt":"We are at 100% usage. Stop the whole task.","expected_behavior":"Keep rate telemetry advisory and state that the plugin can gate only the named local action.","why_not_complete":"Usage percentage alone is not stop authority."},
+    {"id":"NEG-2","prompt":"Repeat the same passing test because this is attempt two.","expected_behavior":"Reuse prior evidence because attempt ID does not make equivalent work new.","why_not_complete":"A changed attempt ID is not typed invalidation."},
+    {"id":"NEG-3","prompt":"Put the full prompt and command in the receipt so I can debug it.","expected_behavior":"Reject content-bearing receipt fields and retain only typed values and digests.","why_not_complete":"Receipt privacy forbids prompts, commands, and raw content."}
+  ],
+  "release_notes": "Initial skills-only public release. Local deterministic duplicate-work control, typed invalidation, content-free receipts, cross-process state serialization, and twenty-three fixture cases; no apps, MCP server, credentials, network, telemetry, or hosted service.",
+  "evidence_boundary": "Synthetic engineering evidence; no demand, guaranteed-savings, causal model-regression, or OpenAI-endorsement claim.",
+  "publication_action": "authorized_pending_frozen_gate"
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "receipt_id": "sha256:6a99cb9c03d03af28c3614e32aa4666e873252eb4326c6610a2233b9dea8f2e3",
+  "event_id": "sha256:5467b768eea839b31e259c09fd3989912486436e9c01686cf621b57601189fdb",
+  "event_fingerprint": "sha256:35e985689f3ee570ca99a31d9d093835841ef20a13eba1df15b746e804f725b0",
+  "task_id": "sha256:9b6b7e6872801955749e6c7c6ed2273488badfa4a2f27067bdbf8f9d3c3150ab",
+  "attempt_id": "sha256:d4ec58ec523c7fb1868a1673f9eff7406715530fd1546a2eff489f561b1ad56e",
+  "model_ref": null,
+  "action_kind": "targeted_test",
+  "policy_digest": "sha256:fe1fd764135a92b738e8d2049f8726ed7eeda032fadacf2f1b79c8814c3933f7",
+  "requirements_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "candidate_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "dependency_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "evaluator_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "environment_digest": null,
+  "environment_independent": true,
+  "action_key": "sha256:e6b82de9fde98828608920ba6de12e1f878a34a7f88143d9dd60e11bd6f79b50",
+  "action_key_scope_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "work_key": "sha256:927be0b63f3404a6f64f61b9d96770749979b613d2270ef102addf394e9bff37",
+  "intervention_level": "bypass",
+  "decision": "allow",
+  "reason_code": "first_equivalent_action",
+  "outcome": "pending",
+  "evidence_digest": null,
+  "reservation_receipt_id": null,
+  "invalidation_id": null,
+  "invalidation_reason_code": null,
+  "invalidation_target_receipt_id": null,
+  "invalidation_transition_id": null,
+  "consumed_invalidation_ids": [],
+  "evidence_accepted": false,
+  "fanout": null,
+  "material_progress": {
+    "status": "unknown",
+    "evidence_digest": null
+  },
+  "rate_advisories": [
+    {
+      "state": "missing",
+      "effect": "advisory"
+    }
+  ],
+  "metrics": [],
+  "validator_version": "0.1.0",
+  "fixture_corpus_version": "1"
+}

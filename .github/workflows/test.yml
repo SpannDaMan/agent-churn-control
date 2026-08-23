@@ -1,0 +1,28 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install --disable-pip-version-check pytest pillow
+      - run: python -B -m pytest -q -p no:cacheprovider
+      - run: python -B plugins/agent-churn-control/scripts/churn_control.py self-test
+      - run: python -B plugins/agent-churn-control/scripts/churn_control.py verify-package
+      - run: python -B tools/validate_release_candidate.py

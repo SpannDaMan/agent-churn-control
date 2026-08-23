@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="62 62 900 900" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Churn Control mark</title>
+  <desc id="desc">A broken blue loop with a cyan forward check arrow, representing stopped repetition and continued progress.</desc>
+  <defs>
+    <linearGradient id="loop" x1="160" y1="850" x2="810" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#061A5B"/>
+      <stop offset="0.52" stop-color="#0839C7"/>
+      <stop offset="1" stop-color="#0A6CFF"/>
+    </linearGradient>
+    <linearGradient id="progress" x1="560" y1="620" x2="890" y2="310" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A6CFF"/>
+      <stop offset="0.55" stop-color="#18BDEB"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <path d="M 770 280 A 334 334 0 1 0 815 690" fill="none" stroke="url(#loop)" stroke-width="112" stroke-linecap="round"/>
+  <path d="M 575 480 L 705 596 L 875 360" fill="none" stroke="url(#progress)" stroke-width="86" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 783 360 H 875 V 452" fill="none" stroke="#22D3EE" stroke-width="86" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

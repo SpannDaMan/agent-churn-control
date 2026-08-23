@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "plugin_id": "agent-churn-control",
+  "version": "0.1.0",
+  "release_state": "public_release_candidate",
+  "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
+  "package_payload_sha256": "fc33956f4a23050ed034fc750d8807b6bffa21310248a8a716163b190df5c8c2",
+  "files": [
+    {
+      "path": ".codex-plugin/plugin.json",
+      "sha256": "0e7d4dbb6aba2f152660fc2bee3c5287068e92c764c840fe207b08c2e614d400",
+      "bytes": 1917
+    },
+    {
+      "path": "assets/Agent Churn Control Vector Dark 230826.svg",
+      "sha256": "d35bc1aaad01121e61c9aabbaeeb3e2b09a33d4c27a651e122b809a92e44a042",
+      "bytes": 1240
+    },
+    {
+      "path": "assets/Agent Churn Control Vector Master 230826.svg",
+      "sha256": "152bbdf946e6876c808ee46f80329ee0774bfdc8338fecc5944ab9981c6b44e4",
+      "bytes": 1267
+    },
+    {
+      "path": "assets/Logo Generation Manifest 230826.json",
+      "sha256": "e20e799ec62ecaad305039c7f6511fa37dd15ba68e1d89a841715e4c1d2691b0",
+      "bytes": 1482
+    },
+    {
+      "path": "assets/authority-map.json",
+      "sha256": "f5ff497ac1fdfbecbdec42ec7c4df12fca27bf8360a28a516f46d4ddff28d436",
+      "bytes": 401
+    },
+    {
+      "path": "assets/contract.schema.json",
+      "sha256": "0bfb2d8e9284098a621f9329a6fd9fa8938c3355e6a275b53ca1cedf7fec89fd",
+      "bytes": 7094
+    },
+    {
+      "path": "assets/core-policy.json",
+      "sha256": "da49f9a221baaf4fe086b381b2af45adc8b8f9deb6c47be539c3119561d078f8",
+      "bytes": 1604
+    },
+    {
+      "path": "assets/icon.png",
+      "sha256": "79aa388e79aa7ab9a0fa074843934d0f81089207c60c37fcb331d98f924f1ba0",
+      "bytes": 56336
+    },
+    {
+      "path": "assets/logo-dark.png",
+      "sha256": "ab9334eb5a93380ae5bf5de72ad15614ae902cc86ca1ab84fcf328b990e6e2b2",
+      "bytes": 146497
+    },
+    {
+      "path": "assets/logo.png",
+      "sha256": "3cff5c3bc1e6f479dd266e136131245d84c960df126b6433f5dc3c333045e5ee",
+      "bytes": 198774
+    },
+    {
+      "path": "assets/sample-efficiency-measurement.json",
+      "sha256": "ef877f617577ed729223beb0b7f6434d0afd6fe4a86527b6e08ff92a2019262b",
+      "bytes": 1063
+    },
+    {
+      "path": "assets/sample-event.json",
+      "sha256": "adbf10f528b06c581c4c38fbab4c5f4795ff33e9804791b0b4c30320613f1fde",
+      "bytes": 932
+    },
+    {
+      "path": "assets/sample-receipt.json",
+      "sha256": "b4fec0beafab8a8a5411df992e6ee434e78806d77e4d2c3754c7e88789684dfd",
+      "bytes": 2047
+    },
+    {
+      "path": "assets/screenshot1.png",
+      "sha256": "4af5beabadc14967639d79c243e94c4a7bd533ebe18b0a1721cf705cdf592301",
+      "bytes": 96356
+    },
+    {
+      "path": "fixtures/v1/corpus.ndjson",
+      "sha256": "37a844ed02d769b6f6e0c7634d3bcc084003bab2ffad6cf0a0b0a62ac96e4443",
+      "bytes": 3623
+    },
+    {
+      "path": "scripts/churn_control.py",
+      "sha256": "196ab014becf9c4e15b5113338ebaf15d1614156a612382256c03b58eaf4b92f",
+      "bytes": 66558
+    },
+    {
+      "path": "skills/agent-churn-control/SKILL.md",
+      "sha256": "309326ef58f8cef0adf3d59e5e58370352854797d1f97e50643af73ad4955bb9",
+      "bytes": 5112
+    },
+    {
+      "path": "skills/agent-churn-control/agents/openai.yaml",
+      "sha256": "f9f299487a1b186b3d1c8941dab10c1c327f8c1cbf12dd8739b18656ec9cc5e0",
+      "bytes": 228
+    },
+    {
+      "path": "tests/test_churn_control.py",
+      "sha256": "b5ae7d3c91868664ae70357e1cd5294f76d10d7202bfc35b0aef597c477a64a3",
+      "bytes": 33951
+    }
+  ],
+  "authority_map_path": "assets/authority-map.json",
+  "fixture_corpus_version": "1",
+  "validator_version": "0.1.0",
+  "publication_or_installation_authorized": true
+}

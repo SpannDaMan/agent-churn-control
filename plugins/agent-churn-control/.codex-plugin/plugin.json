@@ -1,0 +1,34 @@
+{
+  "name": "agent-churn-control",
+  "version": "0.1.0",
+  "description": "Stop agents from repeating equivalent local work when accepted evidence can be reused.",
+  "author": {
+    "name": "SpannDaMan",
+    "url": "https://github.com/SpannDaMan"
+  },
+  "homepage": "https://github.com/SpannDaMan/agent-churn-control",
+  "repository": "https://github.com/SpannDaMan/agent-churn-control",
+  "license": "MIT",
+  "keywords": ["agents", "codex", "duplicate-work", "evidence-reuse", "rate-limits", "receipts"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Churn Control",
+    "shortDescription": "Stop duplicate agent work",
+    "longDescription": "Stop agents from rerunning equivalent tests, reviews, retries, and tool calls when accepted evidence already exists. Agent Churn Control runs locally, reuses content-free receipts, permits changed work through typed invalidation, and keeps rate-limit signals advisory—helping preserve capacity without weakening final verification. No account, API key, telemetry, network call, or hosted service.",
+    "developerName": "Orbral",
+    "category": "Developer Tools",
+    "capabilities": ["Local", "Evidence reuse", "Duplicate-work control", "No credentials"],
+    "websiteURL": "https://github.com/SpannDaMan/agent-churn-control",
+    "privacyPolicyURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
+    "defaultPrompt": [
+      "Check this local action; show the pending reservation or missing identity fields.",
+      "Reuse accepted evidence and show what still needs verification.",
+      "Audit this agent run for repeated tests, reviews, retries, and polling."
+    ],
+    "brandColor": "#0A6CFF",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo-dark.png"
+  }
+}
