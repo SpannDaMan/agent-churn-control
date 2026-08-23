@@ -186,6 +186,14 @@ def test_state_decision_is_atomic_across_concurrent_processes() -> None:
         assert len(core.load_receipts(state)) == 3
 
 
+def test_package_verification_normalizes_text_line_endings(tmp_path: Path) -> None:
+    lf_path = tmp_path / "lf.json"
+    crlf_path = tmp_path / "crlf.json"
+    lf_path.write_bytes(b'{"value":1}\n')
+    crlf_path.write_bytes(b'{"value":1}\r\n')
+    assert core.package_file_bytes(lf_path) == core.package_file_bytes(crlf_path)
+
+
 def test_skill_and_policy_dimension_contract_match() -> None:
     skill = (ROOT / "skills" / "agent-churn-control" / "SKILL.md").read_text(encoding="utf-8")
     assert "material progress separate from churn" in skill.lower()

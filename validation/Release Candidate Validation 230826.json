@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
   "candidate": "agent-churn-control 0.1.0",
-  "product_revision_sha256": "5f7e5359e73b6b4ff072f3f831e0a7ffbea513872a74068a1b1f87be09bf7e20",
+  "product_revision_sha256": "023f1c1dcfa42eb5b9e94ef945a5ee34ccb75f5ad23103fae3e606f50c693399",
   "validated_on": "2026-08-23",
   "status": "pass",
   "checks": {
-    "unit_tests": "21 passed",
+    "unit_tests": "22 passed",
     "fixture_corpus": "23 of 23 passed",
     "required_files": "pass",
     "file_shape": "pass",
@@ -22,9 +22,10 @@
     "targeted_store_focus_panel": "initial block with one P1 and two P2 findings",
     "targeted_finding_closure": "accept with no remaining findings",
     "cross_platform_revision_normalization": "pass LF and CRLF text produce identical revision bytes",
-    "release_doctrine": "pass public doctrine review records product invariants, authority, claims, and gates"
+    "release_doctrine": "pass public doctrine review records product invariants, authority, claims, and gates",
+    "cross_platform_package_manifest": "pass canonical text hashes are line-ending invariant"
   },
-  "package_payload_sha256": "48f6fad69658132da28b429d56d6214bcd4b59ddc4a6ee9e0c292b3067b9b463",
+  "package_payload_sha256": "be7dc840938c200183917b0f2dafc648ffa059a822f47c9b0539de59e9f415f4",
   "store_copy": {"subtitle":"Stop duplicate agent work","score":96,"claim_boundary":"no demand, savings guarantee, causal model-regression, or endorsement claim"},
   "focus_repair_summary": ["ignored untracked caches cannot enter the public package or self-contaminate validation", "first starter prompt exposes bypass and missing identity fields", "screenshot exposes evidence reuse, private receipt, and unknown cost"],
   "release_disposition": "ready_for_pr_first_publication",

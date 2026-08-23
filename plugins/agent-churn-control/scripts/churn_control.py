@@ -31,6 +31,7 @@ PROHIBITED_RECEIPT_KEYS = {
     "token", "credential", "absolute_path", "source_text", "participant_identity",
 }
 OPAQUE_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:@-]{0,127}$")
+PACKAGE_TEXT_SUFFIXES = {".json", ".jsonl", ".md", ".py", ".yaml", ".yml", ".svg"}
 ACTION_KINDS = {"targeted_test", "broad_test", "premium_review", "retry", "tool_call", "panel", "plan_revision", "artifact", "promotion"}
 MATERIAL_PROGRESS_STATES = {"yes", "no", "unknown"}
 METRIC_STATUSES = {"measured", "derived", "unknown", "stale"}
@@ -421,6 +422,13 @@ def verify_receipt(receipt: dict[str, Any]) -> list[str]:
     return errors
 
 
+def package_file_bytes(path: Path) -> bytes:
+    raw = path.read_bytes()
+    if path.suffix.lower() in PACKAGE_TEXT_SUFFIXES:
+        return raw.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+    return raw
+
+
 def verify_package(manifest_path: Path) -> list[str]:
     manifest = read_json(manifest_path)
     errors: list[str] = []
@@ -442,14 +450,15 @@ def verify_package(manifest_path: Path) -> list[str]:
         if not path.exists():
             errors.append(f"package file missing: {row['path']}")
             continue
-        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        raw = package_file_bytes(path)
+        actual = hashlib.sha256(raw).hexdigest()
         if actual != row["sha256"]:
             errors.append(f"package file hash mismatch: {row['path']}")
-        if path.stat().st_size != row.get("bytes"):
+        if len(raw) != row.get("bytes"):
             errors.append(f"package file byte count mismatch: {row['path']}")
-        material.append(f"{str(row['path']).replace(chr(92), '/')}|{actual}|{path.stat().st_size}")
+        material.append(f"{str(row['path']).replace(chr(92), '/')}|{actual}|{len(raw)}")
     aggregate = hashlib.sha256("\n".join(sorted(material)).encode("utf-8")).hexdigest()
-    if manifest.get("aggregate_algorithm") != "sha256_sorted_path_hash_bytes_v1":
+    if manifest.get("aggregate_algorithm") != "sha256_sorted_path_canonical_hash_bytes_v2":
         errors.append("package aggregate_algorithm is missing or invalid")
     if manifest.get("package_payload_sha256") != aggregate:
         errors.append("package_payload_sha256 mismatch")
