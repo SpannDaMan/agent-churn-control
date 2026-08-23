@@ -1,0 +1,12 @@
+{
+  "name": "agent-churn-control",
+  "interface": {"displayName":"Agent Churn Control"},
+  "plugins": [
+    {
+      "name": "agent-churn-control",
+      "source": {"source":"local","path":"./plugins/agent-churn-control"},
+      "policy": {"installation":"AVAILABLE","authentication":"ON_INSTALL"},
+      "category": "Developer Tools"
+    }
+  ]
+}

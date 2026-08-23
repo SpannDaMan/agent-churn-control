@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "claim_type": "non_guaranteed_avoided_work_measurement",
+  "comparison_status": "comparable_authoritative_basis_present",
+  "work_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "basis_receipt_ids": [
+    "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  ],
+  "measured_example": {
+    "name": "avoided_work_units",
+    "status": "derived",
+    "value": 1,
+    "unit": "work_units",
+    "source_ref": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "unknown_example": {
+    "name": "cost_of_pass",
+    "status": "unknown",
+    "value": null,
+    "unit": "usd",
+    "source_ref": null,
+    "basis_receipt_ids": []
+  },
+  "guaranteed_savings_claim_allowed": false
+}

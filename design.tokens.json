@@ -1,0 +1,25 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "color": {
+    "navy900": {"$type":"color","$value":"#061A5B"},
+    "blue700": {"$type":"color","$value":"#0839C7"},
+    "blue500": {"$type":"color","$value":"#0A6CFF"},
+    "cyan400": {"$type":"color","$value":"#22D3EE"},
+    "ink900": {"$type":"color","$value":"#0F1B33"},
+    "slate600": {"$type":"color","$value":"#5B6B7A"},
+    "surface050": {"$type":"color","$value":"#F6F9FC"},
+    "white": {"$type":"color","$value":"#FFFFFF"}
+  },
+  "radius": {
+    "sm": {"$type":"dimension","$value":{"value":8,"unit":"px"}},
+    "md": {"$type":"dimension","$value":{"value":16,"unit":"px"}},
+    "lg": {"$type":"dimension","$value":{"value":24,"unit":"px"}}
+  },
+  "spacing": {
+    "xs": {"$type":"dimension","$value":{"value":8,"unit":"px"}},
+    "sm": {"$type":"dimension","$value":{"value":12,"unit":"px"}},
+    "md": {"$type":"dimension","$value":{"value":20,"unit":"px"}},
+    "lg": {"$type":"dimension","$value":{"value":32,"unit":"px"}},
+    "xl": {"$type":"dimension","$value":{"value":48,"unit":"px"}}
+  }
+}

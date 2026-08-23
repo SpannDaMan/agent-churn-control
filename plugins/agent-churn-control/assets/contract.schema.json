@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Churn Control Event",
+  "type": "object",
+  "required": ["schema_version", "event_id", "task_id", "attempt_id", "action_kind", "action_scope_digest", "requirements_digest", "policy_digest", "evaluator_digest"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "event_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@-]{0,127}$"},
+    "task_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@-]{0,127}$"},
+    "attempt_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@-]{0,127}$"},
+    "model_ref": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@-]{0,127}$"},
+    "action_kind": {"enum": ["targeted_test", "broad_test", "premium_review", "retry", "tool_call", "panel", "plan_revision", "artifact", "promotion"]},
+    "action_scope_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "requirements_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "candidate_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "dependency_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "policy_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "evaluator_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "environment_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "environment_independent": {"const": true},
+    "evidence_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "material_progress": {
+      "type": "object",
+      "required": ["status", "evidence_digest"],
+      "properties": {
+        "status": {"enum": ["yes", "no", "unknown"]},
+        "evidence_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "promotion_requested": {"type": "boolean"},
+    "promotion_evidence": {"type": "object"},
+    "fanout": {"type": ["object", "null"]},
+    "invalidation": {"type": ["object", "null"]},
+    "rate_telemetry": {"type": ["object", "null"]},
+    "metrics": {"type": "array"}
+  },
+  "additionalProperties": false
+}

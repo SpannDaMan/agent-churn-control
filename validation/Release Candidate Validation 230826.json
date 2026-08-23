@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "candidate": "agent-churn-control 0.1.0",
+  "product_revision_sha256": "5f7e5359e73b6b4ff072f3f831e0a7ffbea513872a74068a1b1f87be09bf7e20",
+  "validated_on": "2026-08-23",
+  "status": "pass",
+  "checks": {
+    "unit_tests": "21 passed",
+    "fixture_corpus": "23 of 23 passed",
+    "required_files": "pass",
+    "file_shape": "pass",
+    "text_safety": "pass",
+    "json": "pass",
+    "metadata": "pass",
+    "assets": "pass",
+    "sample_receipt": "pass",
+    "package_integrity": "pass",
+    "plugin_validator": "pass",
+    "skill_validator": "pass",
+    "copy_benchmark": "pass score 96",
+    "benchmark_application": "pass exact match",
+    "targeted_store_focus_panel": "initial block with one P1 and two P2 findings",
+    "targeted_finding_closure": "accept with no remaining findings",
+    "cross_platform_revision_normalization": "pass LF and CRLF text produce identical revision bytes",
+    "release_doctrine": "pass public doctrine review records product invariants, authority, claims, and gates"
+  },
+  "package_payload_sha256": "48f6fad69658132da28b429d56d6214bcd4b59ddc4a6ee9e0c292b3067b9b463",
+  "store_copy": {"subtitle":"Stop duplicate agent work","score":96,"claim_boundary":"no demand, savings guarantee, causal model-regression, or endorsement claim"},
+  "focus_repair_summary": ["ignored untracked caches cannot enter the public package or self-contaminate validation", "first starter prompt exposes bypass and missing identity fields", "screenshot exposes evidence reuse, private receipt, and unknown cost"],
+  "release_disposition": "ready_for_pr_first_publication",
+  "publication_action": "authorized_by_operator",
+  "external_state_changed_by_this_receipt": false
+}

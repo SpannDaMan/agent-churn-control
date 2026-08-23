@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "product": "Agent Churn Control",
+  "developer": "Orbral",
+  "source_type": "deterministic_vector_rebuild_from_generated_direction",
+  "generation_mode": "ChatGPT Web image generation with exact SVG production rebuild",
+  "generated_direction_sha256": "b2413dad2929914feacaa94a935f169162d679cd304102db994b6314534915da",
+  "generated_direction_status": "direction_only_rejected_for_edge_speckling",
+  "canonical_master": "plugins/agent-churn-control/assets/Agent Churn Control Vector Master 230826.svg",
+  "master_sha256": "152bbdf946e6876c808ee46f80329ee0774bfdc8338fecc5944ab9981c6b44e4",
+  "dark_master": "plugins/agent-churn-control/assets/Agent Churn Control Vector Dark 230826.svg",
+  "dark_master_sha256": "d35bc1aaad01121e61c9aabbaeeb3e2b09a33d4c27a651e122b809a92e44a042",
+  "source_background_policy": "transparent_source",
+  "local_edit_status": "exact_vector_production_rebuild_and_safe_fill",
+  "identity_meaning": "interrupted repetition loop plus forward progress check arrow",
+  "assets": {
+    "logo.png": {"sha256":"3cff5c3bc1e6f479dd266e136131245d84c960df126b6433f5dc3c333045e5ee","dimensions":[1024,1024]},
+    "logo-dark.png": {"sha256":"ab9334eb5a93380ae5bf5de72ad15614ae902cc86ca1ab84fcf328b990e6e2b2","dimensions":[1024,1024]},
+    "icon.png": {"sha256":"79aa388e79aa7ab9a0fa074843934d0f81089207c60c37fcb331d98f924f1ba0","dimensions":[512,512]}
+  },
+  "rights_status": "original_orbral_product_identity",
+  "public_safe": true
+}

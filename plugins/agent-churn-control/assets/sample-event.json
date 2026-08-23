@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "event_id": "event-example-001",
+  "task_id": "task-example",
+  "attempt_id": "attempt-001",
+  "action_kind": "targeted_test",
+  "action_scope_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "requirements_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "candidate_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "dependency_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "policy_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "evaluator_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "environment_independent": true,
+  "material_progress": {"status": "unknown", "evidence_digest": null},
+  "rate_telemetry": {"state": "missing", "effect": "advisory"},
+  "metrics": []
+}

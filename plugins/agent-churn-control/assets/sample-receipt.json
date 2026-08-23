@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "receipt_id": "sha256:e61fca800aef6437681764e857c78743f26c6e23dbc2b940f8a2aa0baabf4abe",
+  "event_id": "sha256:5467b768eea839b31e259c09fd3989912486436e9c01686cf621b57601189fdb",
+  "task_id": "sha256:9b6b7e6872801955749e6c7c6ed2273488badfa4a2f27067bdbf8f9d3c3150ab",
+  "attempt_id": "sha256:d4ec58ec523c7fb1868a1673f9eff7406715530fd1546a2eff489f561b1ad56e",
+  "model_ref": null,
+  "policy_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "candidate_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "dependency_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "action_key": "sha256:e6b82de9fde98828608920ba6de12e1f878a34a7f88143d9dd60e11bd6f79b50",
+  "action_key_scope_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "work_key": "sha256:10ebbc8f9efd23d45c20021138390f4db366990b8d9bbf9478895b554757b86d",
+  "intervention_level": "bypass",
+  "decision": "allow",
+  "reason_code": "first_equivalent_action",
+  "outcome": "pass",
+  "evidence_digest": null,
+  "invalidation_id": null,
+  "consumed_invalidation_ids": [],
+  "fanout": null,
+  "material_progress": {
+    "status": "unknown",
+    "evidence_digest": null
+  },
+  "rate_advisories": [
+    {
+      "state": "missing",
+      "effect": "advisory"
+    }
+  ],
+  "metrics": [],
+  "validator_version": "0.1.0",
+  "fixture_corpus_version": "1"
+}

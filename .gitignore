@@ -1,0 +1,10 @@
+.agent-churn-control/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+receipt.json

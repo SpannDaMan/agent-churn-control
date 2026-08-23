@@ -1,0 +1,17 @@
+name: Feature request
+description: Propose a bounded product improvement
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: job
+    attributes: {label: Builder job, description: What repeated-work decision is not covered today?}
+    validations: {required: true}
+  - type: textarea
+    id: boundary
+    attributes: {label: Smallest useful change, description: Explain why this belongs in the local core rather than a router, gateway, scheduler, database, or hosted service.}
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: Reproduction or evidence}
+    validations: {required: true}

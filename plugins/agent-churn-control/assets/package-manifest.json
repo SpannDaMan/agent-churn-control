@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "plugin_id": "agent-churn-control",
+  "version": "0.1.0",
+  "release_state": "public_release_candidate",
+  "aggregate_algorithm": "sha256_sorted_path_hash_bytes_v1",
+  "package_payload_sha256": "48f6fad69658132da28b429d56d6214bcd4b59ddc4a6ee9e0c292b3067b9b463",
+  "files": [
+    {"path":".codex-plugin/plugin.json","sha256":"024dca630c4ca2eca92d84a4590a30f4e1ed71c46aa67df70da2c7e75bafc170","bytes":1962},
+    {"path":"skills/agent-churn-control/SKILL.md","sha256":"653b2b2a6a80ddd0a190ab280e850f0b1ff8e557f0e1c58e3c7a9fc3d94bd29f","bytes":4209},
+    {"path":"skills/agent-churn-control/agents/openai.yaml","sha256":"70b3d7b6f59c5331325919dfe9c769d830b6fdb5767b8bb326409181b0acfe00","bytes":223},
+    {"path":"scripts/churn_control.py","sha256":"8c878be18708cd97a0a817b95ef5ac68833e39a9a5e44bd3f6db2ffde3a8c1ed","bytes":32071},
+    {"path":"assets/core-policy.json","sha256":"da49f9a221baaf4fe086b381b2af45adc8b8f9deb6c47be539c3119561d078f8","bytes":1604},
+    {"path":"assets/contract.schema.json","sha256":"1e87daad0de90e1fc2ec7332a9b5d31ead57697459d445e8b66b2b26842efcb2","bytes":2228},
+    {"path":"assets/authority-map.json","sha256":"f5ff497ac1fdfbecbdec42ec7c4df12fca27bf8360a28a516f46d4ddff28d436","bytes":401},
+    {"path":"assets/sample-event.json","sha256":"388cc4c30c85ca3183b166c1949bf1905b30a7013a1dcd2ed53387dfafc93db3","bytes":932},
+    {"path":"assets/sample-receipt.json","sha256":"1939cebd6c396e975b90fde69c54f6751906c96d34c325c7a8bc9926a67a7432","bytes":1497},
+    {"path":"assets/sample-efficiency-measurement.json","sha256":"c589ac2ed3e75ac12a26c25e9508da8b9fb4e4fab84596e44bbc07e428d03ac3","bytes":868},
+    {"path":"assets/Agent Churn Control Vector Master 230826.svg","sha256":"152bbdf946e6876c808ee46f80329ee0774bfdc8338fecc5944ab9981c6b44e4","bytes":1267},
+    {"path":"assets/Agent Churn Control Vector Dark 230826.svg","sha256":"d35bc1aaad01121e61c9aabbaeeb3e2b09a33d4c27a651e122b809a92e44a042","bytes":1240},
+    {"path":"assets/Logo Generation Manifest 230826.json","sha256":"e20e799ec62ecaad305039c7f6511fa37dd15ba68e1d89a841715e4c1d2691b0","bytes":1482},
+    {"path":"assets/icon.png","sha256":"79aa388e79aa7ab9a0fa074843934d0f81089207c60c37fcb331d98f924f1ba0","bytes":56336},
+    {"path":"assets/logo.png","sha256":"3cff5c3bc1e6f479dd266e136131245d84c960df126b6433f5dc3c333045e5ee","bytes":198774},
+    {"path":"assets/logo-dark.png","sha256":"ab9334eb5a93380ae5bf5de72ad15614ae902cc86ca1ab84fcf328b990e6e2b2","bytes":146497},
+    {"path":"assets/screenshot1.png","sha256":"4af5beabadc14967639d79c243e94c4a7bd533ebe18b0a1721cf705cdf592301","bytes":96356},
+    {"path":"fixtures/v1/corpus.ndjson","sha256":"40cf058584088adda5e77be6c0e288ad5ff6251c9af66aaf5285ae7af56dff4d","bytes":3389},
+    {"path":"tests/test_churn_control.py","sha256":"872b7dcb57e58fd21e09b22c7192ff33db703f80410b46fb3c6a6140d303b933","bytes":9089}
+  ],
+  "authority_map_path": "assets/authority-map.json",
+  "fixture_corpus_version": "1",
+  "validator_version": "0.1.0",
+  "publication_or_installation_authorized": true
+}
