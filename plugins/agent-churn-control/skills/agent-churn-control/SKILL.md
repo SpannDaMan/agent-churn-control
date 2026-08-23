@@ -12,15 +12,16 @@ Keep material progress separate from churn. Material output can prove progress; 
 ## Quick Start
 
 1. Create an event from `assets/sample-event.json`.
-2. Run `python scripts/churn_control.py decide --event <event.json> --state .agent-churn-control/receipts.ndjson`.
-3. Run `python scripts/churn_control.py verify --receipt <receipt.json>` for a saved receipt, `python scripts/churn_control.py verify-package` for package integrity, or `python scripts/churn_control.py self-test` for the versioned fixture corpus.
+2. Run `python scripts/churn_control.py decide --event <event.json> --state .agent-churn-control/receipts.ndjson --output <reservation.json>`.
+3. After the action actually completes, run `python scripts/churn_control.py accept --event <event.json> --reservation <reservation.json> --evidence-digest <sha256:digest> --state .agent-churn-control/receipts.ndjson --output <accepted.json>`.
+4. Run `python scripts/churn_control.py verify --receipt <accepted.json>` for a saved receipt, `python scripts/churn_control.py verify-package` for package integrity, or `python scripts/churn_control.py self-test` for the versioned fixture corpus.
 
-The state path is serialized with a zero-dependency cross-process lock and re-read before append. Concurrent callers sharing the same state file therefore cannot both claim the first equivalent action.
+An `allow` decision is a pending reservation, never proof that the action passed. Only the `accept` transition can attach an evidence digest and make the result reusable. The state path is serialized with a zero-dependency cross-process lock and re-read before append. Concurrent callers sharing the same state file therefore cannot both claim the first equivalent action.
 
 ## Intervention Levels
 
-- `bypass`: first solo non-promotion action with complete identity; run with no user-authored plan or ledger.
-- `observe`: identity or optional metrics are incomplete, or a valid typed invalidation permits one re-execution; run with an advisory.
+- `bypass`: first solo non-promotion action with complete identity; reserve and run it with no user-authored plan or ledger.
+- `observe`: record linked accepted evidence, report incomplete identity, or permit one valid typed invalidation.
 - `enforce`: equivalent accepted evidence exists, a deterministic failure needs local repair, or declared fan-out is malformed; block only that duplicate local action.
 - `promotion_gate`: verify frozen candidate evidence and readiness; never publish or install.
 
@@ -30,7 +31,8 @@ Provide digests for action scope, requirements, policy, and evaluator. Provide c
 
 ## Evidence Rules
 
-- Reuse a passing receipt for the same work key.
+- Reuse only a verified, accepted receipt for the same work key.
+- Never treat a pending reservation as passing evidence; link acceptance to the exact reservation receipt.
 - Do not repeat equivalent work because the attempt ID, timestamp, note, or caller-generated UUID changed.
 - Use typed, single-use invalidation for a repeated action after a transient failure or proven evidence corruption.
 - Keep unknown metrics unknown. Do not convert missing usage or cost to zero.

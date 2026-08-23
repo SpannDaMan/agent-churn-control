@@ -1,4 +1,4 @@
 interface:
   display_name: "Agent Churn Control"
   short_description: "Stop duplicate agent work"
-  default_prompt: "Use $agent-churn-control to check this first local action; show bypass or the missing identity fields."
+  default_prompt: "Use $agent-churn-control to check this local action; show the pending reservation or missing identity fields."

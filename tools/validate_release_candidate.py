@@ -25,7 +25,7 @@ CORE = PLUGIN / "scripts" / "churn_control.py"
 EXPECTED_SUBTITLE = "Stop duplicate agent work"
 EXPECTED_LONG = "Stop agents from rerunning equivalent tests, reviews, retries, and tool calls when accepted evidence already exists. Agent Churn Control runs locally, reuses content-free receipts, permits changed work through typed invalidation, and keeps rate-limit signals advisory—helping preserve capacity without weakening final verification. No account, API key, telemetry, network call, or hosted service."
 EXPECTED_PROMPTS = [
-    "Check this first local action; show bypass or the missing identity fields.",
+    "Check this local action; show the pending reservation or missing identity fields.",
     "Reuse accepted evidence and show what still needs verification.",
     "Audit this agent run for repeated tests, reviews, retries, and polling.",
 ]
@@ -41,7 +41,7 @@ REQUIRED_FILES = (
     "docs/CODEX-INSTALL.md", "docs/DECISIONS-AND-RECEIPTS.md", "docs/EVALUATION.md",
     "docs/OPENAI-PLUGIN-SUBMISSION.md", "submission/openai-plugin-submission.json",
     "tests/test_release_validator.py",
-    "tools/render_store_assets.py", "tools/validate_release_candidate.py",
+    "tools/build_package_manifest.py", "tools/render_store_assets.py", "tools/validate_release_candidate.py",
     "plugins/agent-churn-control/.codex-plugin/plugin.json",
     "plugins/agent-churn-control/skills/agent-churn-control/SKILL.md",
     "plugins/agent-churn-control/skills/agent-churn-control/agents/openai.yaml",
@@ -65,6 +65,7 @@ REQUIRED_FILES = (
 )
 
 TEXT_SUFFIXES = {".md", ".txt", ".json", ".jsonl", ".py", ".yml", ".yaml", ".svg"}
+REVISION_TEXT_NAMES = {"LICENSE", ".gitattributes", ".gitignore"}
 GENERATED_PARTS = {".git", ".pytest_cache", "__pycache__", ".mypy_cache", ".ruff_cache", ".venv", "venv", "dist", "build"}
 PRIVATE_MARKERS = (
     "c:" + "/users/", "c:" + "\\users\\", "agent smith" + " projects", "runtime/" + "astf",
@@ -91,20 +92,21 @@ def sha256(path: Path) -> str:
 
 def canonical_file_bytes(path: Path) -> bytes:
     raw = path.read_bytes()
-    if path.suffix.lower() in TEXT_SUFFIXES or path.name == "LICENSE":
+    if path.suffix.lower() in TEXT_SUFFIXES or path.name in REVISION_TEXT_NAMES:
         text = raw.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n")
         return text.encode("utf-8")
     return raw
 
 
 def product_revision() -> str:
-    rows: list[str] = []
-    for path in sorted(ROOT.rglob("*")):
+    entries: list[tuple[str, bytes]] = []
+    for path in ROOT.rglob("*"):
         relative = path.relative_to(ROOT)
         if not path.is_file() or any(part in GENERATED_PARTS for part in relative.parts) or relative.parts[0] == "validation":
             continue
         payload = canonical_file_bytes(path)
-        rows.append(f"{relative.as_posix()}|{hashlib.sha256(payload).hexdigest()}|{len(payload)}")
+        entries.append((relative.as_posix(), payload))
+    rows = [f"{relative}|{hashlib.sha256(payload).hexdigest()}|{len(payload)}" for relative, payload in sorted(entries, key=lambda item: item[0])]
     return hashlib.sha256("\n".join(rows).encode("utf-8")).hexdigest()
 
 
@@ -246,12 +248,15 @@ def validate_assets() -> list[str]:
 
 def validate_runtime() -> list[str]:
     errors: list[str] = []
-    self_test = subprocess.run([sys.executable, str(CORE), "self-test"], cwd=ROOT, capture_output=True, text=True)
+    self_test = subprocess.run([sys.executable, "-B", str(CORE), "self-test"], cwd=ROOT, capture_output=True, text=True)
     if self_test.returncode != 0:
         errors.append(f"self-test failed: {self_test.stderr.strip() or self_test.stdout.strip()}")
-    package = subprocess.run([sys.executable, str(CORE), "verify-package"], cwd=ROOT, capture_output=True, text=True)
+    package = subprocess.run([sys.executable, "-B", str(CORE), "verify-package"], cwd=ROOT, capture_output=True, text=True)
     if package.returncode != 0:
         errors.append(f"package verification failed: {package.stderr.strip() or package.stdout.strip()}")
+    sample = subprocess.run([sys.executable, "-B", str(CORE), "verify", "--receipt", str(PLUGIN / "assets" / "sample-receipt.json")], cwd=ROOT, capture_output=True, text=True)
+    if sample.returncode != 0:
+        errors.append(f"sample receipt verification failed: {sample.stderr.strip() or sample.stdout.strip()}")
     return errors
 
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 from pathlib import Path
 
 
@@ -35,3 +36,25 @@ def test_product_revision_normalizes_text_line_endings(tmp_path: Path) -> None:
     lf.write_bytes(b"one\ntwo\n")
     crlf.write_bytes(b"one\r\ntwo\r\n")
     assert validator.canonical_file_bytes(lf) == validator.canonical_file_bytes(crlf)
+
+
+def test_product_revision_normalizes_required_dotfiles(tmp_path: Path) -> None:
+    lf = tmp_path / ".gitignore"
+    crlf = tmp_path / ".gitattributes"
+    lf.write_bytes(b"one\ntwo\n")
+    crlf.write_bytes(b"one\r\ntwo\r\n")
+    assert validator.canonical_file_bytes(lf) == validator.canonical_file_bytes(crlf)
+
+
+def test_product_revision_sorts_canonical_posix_paths(tmp_path: Path, monkeypatch) -> None:
+    (tmp_path / "z").mkdir()
+    (tmp_path / "a").mkdir()
+    (tmp_path / "z" / "two.md").write_bytes(b"two\r\n")
+    (tmp_path / "a" / "one.md").write_bytes(b"one\n")
+    monkeypatch.setattr(validator, "ROOT", tmp_path)
+    rows = []
+    for relative in ("a/one.md", "z/two.md"):
+        payload = validator.canonical_file_bytes(tmp_path / Path(relative))
+        rows.append(f"{relative}|{hashlib.sha256(payload).hexdigest()}|{len(payload)}")
+    expected = hashlib.sha256("\n".join(rows).encode("utf-8")).hexdigest()
+    assert validator.product_revision() == expected

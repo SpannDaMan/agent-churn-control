@@ -10,6 +10,7 @@ Provide either an `environment_digest` or `environment_independent: true`. Omitt
 
 - `allow`: first complete equivalent action.
 - `allow_with_advisory`: identity is incomplete.
+- `evidence_accepted`: the action completed and accepted evidence was linked to its pending reservation.
 - `reuse_prior_evidence`: accepted equivalent evidence already exists.
 - `allow_reexecution`: a valid typed invalidation authorizes one changed-work pass.
 - `local_fix_required`: a deterministic local failure needs repair before retry.
@@ -17,6 +18,8 @@ Provide either an `environment_digest` or `environment_independent: true`. Omitt
 - `promotion_ready` or `promotion_not_ready`: frozen-candidate evidence is complete or incomplete.
 
 ## Receipt privacy
+
+An `allow`, `allow_with_advisory`, or `allow_reexecution` receipt remains `pending`. It cannot be reused. The `accept` command verifies the pending reservation, preserves the same work identity, and emits a separately checksummed receipt with `evidence_accepted: true` and a content-free evidence digest. Exact event-ID replay returns the original decision; a later action request must use a new event ID.
 
 External identifiers are stored as SHA-256 digests. Metrics use bounded names, statuses, units, numeric values, nulls, and digest references. Unknown and stale values remain null.
 

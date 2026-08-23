@@ -23,6 +23,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install --disable-pip-version-check pytest pillow
       - run: python -B -m pytest -q -p no:cacheprovider
-      - run: python plugins/agent-churn-control/scripts/churn_control.py self-test
-      - run: python plugins/agent-churn-control/scripts/churn_control.py verify-package
-      - run: python tools/validate_release_candidate.py
+      - run: python -B plugins/agent-churn-control/scripts/churn_control.py self-test
+      - run: python -B plugins/agent-churn-control/scripts/churn_control.py verify-package
+      - run: python -B tools/validate_release_candidate.py

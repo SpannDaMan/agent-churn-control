@@ -13,13 +13,13 @@
   "privacy_policy_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
   "terms_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
   "starter_prompts": [
-    "Check this first local action; show bypass or the missing identity fields.",
+    "Check this local action; show the pending reservation or missing identity fields.",
     "Reuse accepted evidence and show what still needs verification.",
     "Audit this agent run for repeated tests, reviews, retries, and polling."
   ],
   "capabilities": ["Local", "Evidence reuse", "Duplicate-work control", "No credentials"],
   "positive_tests": [
-    {"id":"POS-1","prompt":"Check this first local action; show bypass or the missing identity fields.","expected_behavior":"Build the local action identity and allow a complete first action without requiring a plan or fan-out packet.","expected_result_shape":"A bypass decision or a precise list of missing identity fields."},
+    {"id":"POS-1","prompt":"Check this local action; show the pending reservation or missing identity fields.","expected_behavior":"Build the local action identity and reserve one complete first action without claiming that it passed.","expected_result_shape":"A pending bypass reservation or a precise list of missing identity fields."},
     {"id":"POS-2","prompt":"Reuse accepted evidence and show what still needs verification.","expected_behavior":"Identify equivalent accepted evidence, block only the duplicate local action, and preserve any distinct final verification.","expected_result_shape":"A reuse_prior_evidence decision with content-free receipt references."},
     {"id":"POS-3","prompt":"This candidate changed. Validate the invalidation and let me rerun the affected check.","expected_behavior":"Require canonical prior-receipt and action-scope binding, then allow one re-execution only when the typed invalidation is valid and unconsumed.","expected_result_shape":"An allow_reexecution or specific invalidation rejection."}
   ],

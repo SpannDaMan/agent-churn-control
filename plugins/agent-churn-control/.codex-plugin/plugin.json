@@ -22,7 +22,7 @@
     "privacyPolicyURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
     "defaultPrompt": [
-      "Check this first local action; show bypass or the missing identity fields.",
+      "Check this local action; show the pending reservation or missing identity fields.",
       "Reuse accepted evidence and show what still needs verification.",
       "Audit this agent run for repeated tests, reviews, retries, and polling."
     ],
