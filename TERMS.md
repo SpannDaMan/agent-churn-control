@@ -1,6 +1,6 @@
 # Terms
 
-Agent Churn Control is open-source software licensed under the [MIT License](LICENSE).
+Anti-Churn is open-source software licensed under the [MIT License](LICENSE).
 
 ## No hosted service
 

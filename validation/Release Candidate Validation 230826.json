@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
-  "candidate": "agent-churn-control 0.1.0",
-  "product_revision_sha256": "c941574f1cb4c7c36b8491ca5fadc9388e5f8cce6853d88e308a9c89ac428e38",
+  "candidate": "agent-churn-control 0.1.1",
+  "product_revision_sha256": "96426bc11f8f1038afcdf343549be4a1d62c6168919ee4a193d78bb84931e808",
   "validated_on": "2026-08-23",
   "status": "pass",
   "checks": {
-    "unit_tests": "53 passed",
+    "unit_tests": "55 passed",
     "fixture_corpus": "23 of 23 passed",
     "required_files": "pass",
     "file_shape": "pass",
@@ -47,7 +47,7 @@
     "cross_platform_package_manifest": "pass canonical text hashes are line-ending invariant",
     "ci_action_runtime": "official Node 24 majors: actions/checkout v6 and actions/setup-python v6"
   },
-  "package_payload_sha256": "fc33956f4a23050ed034fc750d8807b6bffa21310248a8a716163b190df5c8c2",
+  "package_payload_sha256": "980be03dfbf38a59176048829683dc0024b07e5403f1fb8b301794ca4c3c3f77",
   "store_copy": {"subtitle":"Stop duplicate agent work","score":96,"claim_boundary":"no demand, savings guarantee, causal model-regression, or endorsement claim"},
   "focus_repair_summary": ["unlisted files and generated cache residue cannot pass package verification", "first starter prompt exposes the pending-reservation and missing-identity states", "screenshot exposes evidence reuse, private receipt, and unknown cost"],
   "release_disposition": "ready_for_merge_and_promotion",

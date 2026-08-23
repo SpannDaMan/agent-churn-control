@@ -9,7 +9,7 @@
 
 ## Trust boundaries
 
-Agent Churn Control trusts the local Python runtime, the event producer, the selected state path, and the packaged policy bytes. It does not trust free-form invalidation prose, changed attempt IDs, timestamps, arbitrary receipt fields, or unverified package contents.
+Anti-Churn trusts the local Python runtime, the event producer, the selected state path, and the packaged policy bytes. It does not trust free-form invalidation prose, changed attempt IDs, timestamps, arbitrary receipt fields, or unverified package contents.
 
 ## Primary threats
 

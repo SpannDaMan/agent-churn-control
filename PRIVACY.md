@@ -1,6 +1,6 @@
 # Privacy
 
-Agent Churn Control is a local, skills-only plugin.
+Anti-Churn is a local, skills-only plugin.
 
 ## Data handling
 
@@ -14,7 +14,7 @@ The plugin rejects content-bearing receipt fields, including prompts, outputs, c
 
 ## Host products
 
-Codex, ChatGPT, GitHub, or another host may have separate privacy and telemetry behavior. Agent Churn Control does not control or expand the host product's data handling.
+Codex, ChatGPT, GitHub, or another host may have separate privacy and telemetry behavior. Anti-Churn does not control or expand the host product's data handling.
 
 ## Contact
 

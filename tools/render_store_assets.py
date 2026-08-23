@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the deterministic Agent Churn Control store screenshot."""
+"""Render the deterministic Anti-Churn store screenshot."""
 
 from __future__ import annotations
 

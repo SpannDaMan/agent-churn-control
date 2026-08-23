@@ -26,6 +26,14 @@ def test_store_assets_have_expected_shape() -> None:
     assert validator.validate_assets() == []
 
 
+def test_activation_suite_has_ten_direct_ten_indirect_and_ten_negative_cases() -> None:
+    assert validator.validate_activation_suite() == []
+
+
+def test_claude_provider_package_is_present_and_consistent() -> None:
+    assert validator.validate_metadata() == []
+
+
 def test_public_tree_contains_no_private_markers() -> None:
     assert validator.validate_text_safety() == []
 

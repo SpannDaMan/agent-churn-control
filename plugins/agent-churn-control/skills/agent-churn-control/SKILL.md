@@ -1,9 +1,9 @@
 ---
 name: agent-churn-control
-description: Prevent duplicate agent work with a local provider-neutral decision core. Use before repeating tests, reviews, plans, retries, tool calls, panels, or promotion gates; when evidence may be reusable; when rate-limit efficiency matters; or when a task needs a bypass, observe, enforce, or promotion-readiness decision without granting external authority.
+description: Use before repeating an agent test, review, plan, retry, tool call, panel, or promotion check. Reuse matching accepted evidence, allow valid changed work through typed invalidation, and gate only the duplicate local action; never stop the overall task or use rate-limit percentage as authority.
 ---
 
-# Agent Churn Control
+# Anti-Churn
 
 Use the bundled local CLI to decide whether a specific agent action should run, reuse prior evidence, be repaired locally, or wait at a promotion gate.
 

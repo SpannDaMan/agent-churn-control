@@ -1,6 +1,6 @@
 {
   "name": "agent-churn-control",
-  "interface": {"displayName":"Agent Churn Control"},
+  "interface": {"displayName":"Anti-Churn"},
   "plugins": [
     {
       "name": "agent-churn-control",

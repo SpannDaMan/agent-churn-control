@@ -1,0 +1,16 @@
+{
+  "name": "agent-churn-control",
+  "description": "The official Orbral marketplace for Anti-Churn.",
+  "owner": {"name": "Orbral", "url": "https://github.com/SpannDaMan"},
+  "plugins": [
+    {
+      "name": "anti-churn",
+      "source": "./plugins/agent-churn-control",
+      "description": "Use before repeating an agent test, review, retry, tool call, or promotion check; reuse matching evidence and allow valid changed work without stopping the task.",
+      "version": "0.1.1",
+      "category": "development",
+      "keywords": ["agent churn", "duplicate work", "evidence reuse", "repeated tests", "rate limits", "typed invalidation"],
+      "tags": ["development", "agents", "efficiency", "local"]
+    }
+  ]
+}

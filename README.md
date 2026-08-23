@@ -1,22 +1,22 @@
 <p align="center">
-  <img src="plugins/agent-churn-control/assets/logo-dark.png" width="180" alt="Agent Churn Control logo">
+  <img src="plugins/agent-churn-control/assets/logo-dark.png" width="180" alt="Anti-Churn logo">
 </p>
 
-# Agent Churn Control
+# Anti-Churn
 
 **Stop duplicate agent work.**
 
-Agent Churn Control prevents agents from rerunning equivalent tests, reviews, retries, tool calls, and promotion checks when accepted evidence already exists. It helps preserve model capacity without blocking valid changed work or weakening final verification.
+Use Anti-Churn before repeating an agent test, review, retry, tool call, or promotion check. It compares the proposed local action with accepted evidence, reuses matching results, permits changed work through typed invalidation, and shows what may be skipped versus what still must run. Rate-limit percentage never becomes stop authority: Anti-Churn gates only the duplicate action and never stops the task, publishes, or changes permissions.
 
 It runs locally with no account, API key, telemetry, network call, hosted service, or model gateway.
 
-![Agent Churn Control decision preview](plugins/agent-churn-control/assets/screenshot1.png)
+![Anti-Churn decision preview](plugins/agent-churn-control/assets/screenshot1.png)
 
 ## The problem
 
 Long agent tasks often repeat work for reasons that do not make the work meaningfully new: a fresh attempt ID, another review request, a status poll, a retry after a deterministic failure, or a second broad test gate over the same candidate.
 
-Agent Churn Control gives the host a deterministic decision before another pass:
+Anti-Churn gives the host a deterministic decision before another pass:
 
 | Decision | Meaning |
 |---|---|
@@ -88,7 +88,7 @@ The first complete solo action returns `bypass` with `outcome: pending`. Only a 
 
 ## What it does not do
 
-Agent Churn Control does not call models, route providers, host a service, publish, install itself, change permissions or scopes, access credentials, guarantee savings, or stop the overall task. Its enforcement applies only to the named local action.
+Anti-Churn does not call models, route providers, host a service, publish, install itself, change permissions or scopes, access credentials, guarantee savings, or stop the overall task. Its enforcement applies only to the named local action.
 
 ## Validate
 
@@ -104,6 +104,7 @@ The public fixture corpus covers first actions, exact replay, evidence reuse, ty
 ## Documentation
 
 - [Codex installation](docs/CODEX-INSTALL.md)
+- [Claude Code installation](docs/CLAUDE-INSTALL.md)
 - [Decision and receipt model](docs/DECISIONS-AND-RECEIPTS.md)
 - [Evaluation](docs/EVALUATION.md)
 - [OpenAI submission packet](docs/OPENAI-PLUGIN-SUBMISSION.md)
