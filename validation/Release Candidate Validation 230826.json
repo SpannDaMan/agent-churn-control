@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
   "candidate": "agent-churn-control 0.1.0",
-  "product_revision_sha256": "a45d9bd11fa65776219d351b6d6e7a5e3657a7f25b6587b605e3ac142684772c",
+  "product_revision_sha256": "c941574f1cb4c7c36b8491ca5fadc9388e5f8cce6853d88e308a9c89ac428e38",
   "validated_on": "2026-08-23",
   "status": "pass",
   "checks": {
-    "unit_tests": "49 passed",
+    "unit_tests": "53 passed",
     "fixture_corpus": "23 of 23 passed",
     "required_files": "pass",
     "file_shape": "pass",
@@ -21,7 +21,7 @@
     "benchmark_application": "pass exact match",
     "targeted_store_focus_panel": "initial block with one P1 and two P2 findings",
     "targeted_finding_closure": "accept with no remaining findings",
-    "final_ultra_review": "three review rounds found seventeen listed findings plus probe defects; every finding is repaired and regression-covered; final clean confirmation pending",
+    "final_ultra_review": "final repair-commit review found two P1 edge cases; both are repaired with targeted regression coverage; no listed finding remains unresolved",
     "pending_reservation_integrity": "pass allow is pending until a matching reservation receipt is linked to accepted evidence",
     "first_run_reservation_acceptance_reuse": "pass three-receipt state transition exercised through the public CLI",
     "prior_receipt_verification": "pass malformed or incomplete prior receipts are rejected before reuse",
@@ -40,15 +40,17 @@
     "malformed_state_and_enum_handling": "pass non-object state fails closed and malformed enums return structured errors",
     "skills_only_submission_shape": "pass interface.screenshots excluded per provider contract while repository marketing screenshot remains",
     "active_policy_binding": "pass event policy digest must match packaged active policy",
+    "lineage_current_prior": "pass each identity transition targets the latest relevant accepted receipt, including a return to historical bytes",
+    "legacy_wrapper_integrity": "pass adapter mode fills only missing prior fields and cannot overwrite known receipt identity",
     "cross_platform_revision_normalization": "pass LF and CRLF text produce identical revision bytes",
     "release_doctrine": "pass public doctrine review records product invariants, authority, claims, and gates",
     "cross_platform_package_manifest": "pass canonical text hashes are line-ending invariant",
     "ci_action_runtime": "official Node 24 majors: actions/checkout v6 and actions/setup-python v6"
   },
-  "package_payload_sha256": "897e69b844515ad1d3639c26f8f9ff2040bd4715fcec9bb0dd21e93c29e0b842",
+  "package_payload_sha256": "fc33956f4a23050ed034fc750d8807b6bffa21310248a8a716163b190df5c8c2",
   "store_copy": {"subtitle":"Stop duplicate agent work","score":96,"claim_boundary":"no demand, savings guarantee, causal model-regression, or endorsement claim"},
   "focus_repair_summary": ["unlisted files and generated cache residue cannot pass package verification", "first starter prompt exposes the pending-reservation and missing-identity states", "screenshot exposes evidence reuse, private receipt, and unknown cost"],
-  "release_disposition": "ready_for_changed_pr_ci_and_ultra_revalidation",
+  "release_disposition": "ready_for_merge_and_promotion",
   "publication_action": "authorized_by_operator",
   "external_state_changed_by_this_receipt": false
 }

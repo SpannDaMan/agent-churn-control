@@ -360,6 +360,7 @@ def validate_invalidation(
         errors.append("invalidation_already_consumed")
     if record.get("action_scope_digest") != prior.get("action_key_scope_digest"):
         errors.append("invalidation action scope does not match prior receipt")
+    event_supplied = event is not None
     if event is None:
         event = {}
         prior = dict(prior)
@@ -368,12 +369,12 @@ def validate_invalidation(
                 continue
             field = change.get("field")
             if field == "action_scope_digest":
-                prior["action_key_scope_digest"] = change.get("before")
+                prior.setdefault("action_key_scope_digest", change.get("before"))
                 event["action_scope_digest"] = change.get("after")
             elif field == "prior_evidence_status":
-                prior["outcome"] = change.get("before")
+                prior.setdefault("outcome", change.get("before"))
             elif isinstance(field, str):
-                prior[field] = change.get("before")
+                prior.setdefault(field, change.get("before"))
                 event[field] = change.get("after")
     transition_id = invalidation_transition_fingerprint(record, event)
     if consumed_transitions is not None and transition_id in consumed_transitions:
@@ -401,6 +402,8 @@ def validate_invalidation(
     state_reasons = {"transient_execution_failure", "prior_evidence_corrupt"}
     if reason_code in state_reasons and changed_fields != {"prior_evidence_status"}:
         errors.append("state invalidation may change only prior_evidence_status")
+    if event_supplied and reason_code in state_reasons and valid_digest(prior.get("work_key"), nullable=True) and prior.get("work_key") is not None and work_key(event) != prior.get("work_key"):
+        errors.append("state invalidation cannot change work identity")
     if reason_code not in state_reasons and "prior_evidence_status" in changed_fields:
         errors.append("identity invalidation cannot change prior_evidence_status")
     for evidence in evidence_rows:
@@ -539,6 +542,15 @@ def build_receipt(event: dict[str, Any], prior_receipts: list[dict[str, Any]], p
         and row.get("receipt_id") not in settled_reservations
     ), None)
     prior = next((row for row in reversed(work_history) if row.get("outcome") in {"pass", "reused", "local_failure"} and row.get("evidence_accepted") is True and valid_digest(row.get("evidence_digest"))), None)
+    latest_scope_prior = next((
+        row for row in reversed(prior_receipts)
+        if key
+        and row.get("task_id") == digest(event["task_id"])
+        and row.get("action_kind") == event.get("action_kind")
+        and row.get("action_key_scope_digest") == event.get("action_scope_digest")
+        and row.get("outcome") in {"pass", "reused", "local_failure"}
+        and row.get("evidence_accepted") is True
+    ), None)
     related_changed_prior = next((
         row for row in reversed(prior_receipts)
         if key
@@ -550,6 +562,14 @@ def build_receipt(event: dict[str, Any], prior_receipts: list[dict[str, Any]], p
         and row.get("evidence_accepted") is True
     ), None)
     record = event.get("invalidation")
+    latest_task_action_prior = next((
+        row for row in reversed(prior_receipts)
+        if key
+        and row.get("task_id") == digest(event["task_id"])
+        and row.get("action_kind") == event.get("action_kind")
+        and row.get("outcome") in {"pass", "reused", "local_failure"}
+        and row.get("evidence_accepted") is True
+    ), None)
     target_prior = invalidation_target(record, prior_receipts)
     consumed = {item for row in prior_receipts for item in row.get("consumed_invalidation_ids", [])}
     consumed_transitions = {
@@ -594,7 +614,10 @@ def build_receipt(event: dict[str, Any], prior_receipts: list[dict[str, Any]], p
             level, decision, reason, outcome = "enforce", "block_this_local_action", "accepted_evidence_without_matching_reservation", "blocked"
             reservation_receipt_id = None
     elif record is not None:
-        if prior is not None and target_prior is not None and target_prior.get("receipt_id") != prior.get("receipt_id"):
+        relevant_prior = latest_scope_prior
+        if isinstance(record, dict) and record.get("reason_code") == "scope_changed":
+            relevant_prior = latest_task_action_prior
+        if relevant_prior is not None and target_prior is not None and target_prior.get("receipt_id") != relevant_prior.get("receipt_id"):
             invalidation_errors = ["invalidation_does_not_target_current_prior"]
         elif pending is not None and isinstance(record, dict) and (record.get("reason_code") != "transient_execution_failure" or target_prior is None or target_prior.get("receipt_id") != pending.get("receipt_id")):
             invalidation_errors = ["equivalent_action_pending"]
@@ -1082,8 +1105,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     if args.command == "decide":
-        event = read_json(args.event)
         try:
+            event = read_json(args.event)
             if args.state:
                 receipt = decide_with_state(event, args.state, load_policy())
                 errors: list[str] = []
@@ -1114,11 +1137,19 @@ def main() -> int:
         print(json.dumps({"status": "pass", "receipt": receipt}, indent=2))
         return 0
     if args.command == "verify":
-        errors = verify_receipt(read_json(args.receipt))
+        try:
+            errors = verify_receipt(read_json(args.receipt))
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            print(json.dumps({"status": "fail", "errors": [str(exc)]}, indent=2))
+            return 1
         print(json.dumps({"status": "pass" if not errors else "fail", "errors": errors}, indent=2))
         return 0 if not errors else 1
     if args.command == "verify-package":
-        errors = verify_package(args.manifest.resolve())
+        try:
+            errors = verify_package(args.manifest.resolve())
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            print(json.dumps({"status": "fail", "errors": [str(exc)]}, indent=2))
+            return 1
         print(json.dumps({"status": "pass" if not errors else "fail", "errors": errors}, indent=2))
         return 0 if not errors else 1
     result = run_self_test(args.corpus.resolve())

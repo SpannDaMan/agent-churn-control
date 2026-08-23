@@ -443,6 +443,57 @@ def test_stale_invalidation_cannot_override_current_accepted_evidence() -> None:
     assert blocked["reason_code"] == "invalidation_does_not_target_current_prior"
 
 
+def test_new_identity_must_invalidate_latest_related_receipt() -> None:
+    history = accepted_chain()
+    v2 = event()
+    v2["event_id"] = "lineage-v2"
+    v2["candidate_digest"] = core.digest({"candidate": "v2"})
+    first_transition = {
+        "schema_version": "1.0",
+        "invalidates": [history[-1]["receipt_id"]],
+        "action_scope_digest": history[-1]["action_key_scope_digest"],
+        "reason_code": "candidate_changed",
+        "changes": [{"field": "candidate_digest", "before": history[-1]["candidate_digest"], "after": v2["candidate_digest"]}],
+        "evidence": [{"kind": "candidate_digest", "digest": v2["candidate_digest"]}],
+    }
+    first_transition["invalidation_id"] = core.invalidation_fingerprint(first_transition)
+    v2["invalidation"] = first_transition
+    v2_reservation = core.build_receipt(v2, history, POLICY)
+    v2_acceptance = core.build_acceptance_event(v2, v2_reservation, core.digest("v2-pass"), "pass")
+    v2_accepted = core.build_receipt(v2_acceptance, [*history, v2_reservation], POLICY)
+
+    v3 = event()
+    v3["event_id"] = "lineage-v3-targeting-v1"
+    v3["candidate_digest"] = core.digest({"candidate": "v3"})
+    stale = {
+        "schema_version": "1.0",
+        "invalidates": [history[-1]["receipt_id"]],
+        "action_scope_digest": history[-1]["action_key_scope_digest"],
+        "reason_code": "candidate_changed",
+        "changes": [{"field": "candidate_digest", "before": history[-1]["candidate_digest"], "after": v3["candidate_digest"]}],
+        "evidence": [{"kind": "candidate_digest", "digest": v3["candidate_digest"]}],
+    }
+    stale["invalidation_id"] = core.invalidation_fingerprint(stale)
+    v3["invalidation"] = stale
+    blocked = core.build_receipt(v3, [*history, v2_reservation, v2_accepted], POLICY)
+    assert blocked["reason_code"] == "invalidation_does_not_target_current_prior"
+
+    back_to_v1 = event()
+    back_to_v1["event_id"] = "lineage-back-to-v1"
+    back_transition = {
+        "schema_version": "1.0",
+        "invalidates": [v2_accepted["receipt_id"]],
+        "action_scope_digest": v2_accepted["action_key_scope_digest"],
+        "reason_code": "candidate_changed",
+        "changes": [{"field": "candidate_digest", "before": v2_accepted["candidate_digest"], "after": back_to_v1["candidate_digest"]}],
+        "evidence": [{"kind": "candidate_digest", "digest": back_to_v1["candidate_digest"]}],
+    }
+    back_transition["invalidation_id"] = core.invalidation_fingerprint(back_transition)
+    back_to_v1["invalidation"] = back_transition
+    allowed = core.build_receipt(back_to_v1, [*history, v2_reservation, v2_accepted], POLICY)
+    assert allowed["decision"] == "allow_reexecution"
+
+
 def test_environment_change_evidence_must_match_current_digest() -> None:
     history = accepted_chain()
     changed = event()
@@ -481,6 +532,18 @@ def test_pending_timeout_can_transition_to_one_retry() -> None:
     assert reused["decision"] == "reuse_prior_evidence"
 
 
+def test_pending_timeout_retry_cannot_change_work_identity() -> None:
+    source = event()
+    reservation = core.build_receipt(source, [], POLICY)
+    retry = event()
+    retry["event_id"] = "retry-timeout-with-changed-candidate"
+    retry["candidate_digest"] = core.digest({"candidate": "v2"})
+    retry["invalidation"] = transient_invalidation(reservation, "timeout-changed")
+    blocked = core.build_receipt(retry, [reservation], POLICY)
+    assert blocked["decision"] == "block_this_local_action"
+    assert blocked["reason_code"] == "invalidation_invalid"
+
+
 def test_transient_retry_budget_is_per_work_key() -> None:
     history = accepted_chain()
     retry = event()
@@ -515,6 +578,16 @@ def test_state_rejects_non_object_records(tmp_path: Path) -> None:
         assert "state line 1 must be a receipt object" in str(exc)
     else:
         raise AssertionError("non-object state record was silently ignored")
+
+
+def test_cli_reports_non_object_event_as_structured_failure(tmp_path: Path) -> None:
+    event_path = tmp_path / "event.json"
+    event_path.write_text("null\n", encoding="utf-8")
+    result = subprocess.run([sys.executable, "-B", str(MODULE_PATH), "decide", "--event", str(event_path)], capture_output=True, text=True)
+    assert result.returncode == 1
+    payload = json.loads(result.stdout)
+    assert payload["status"] == "fail"
+    assert "JSON root must be an object" in payload["errors"][0]
 
 
 def test_malformed_enum_values_return_errors_instead_of_crashing() -> None:
@@ -559,6 +632,15 @@ def test_missing_invalidation_fields_are_deterministically_ordered() -> None:
         "invalidation missing field: changes",
         "invalidation missing field: evidence",
     ]
+
+
+def test_legacy_invalidation_wrapper_preserves_known_prior_values() -> None:
+    history = accepted_chain()
+    record = transient_invalidation(history[-1], "legacy-wrapper")
+    record["changes"][0]["before"] = "pending"
+    record["invalidation_id"] = core.invalidation_fingerprint(record)
+    errors = core.validate_invalidation(record, history[-1], set(), POLICY)
+    assert "invalidation change does not match prior and current identity" in errors
 
 
 def test_receipt_verifier_enforces_complete_nested_schema() -> None:

@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "release_state": "public_release_candidate",
   "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
-  "package_payload_sha256": "897e69b844515ad1d3639c26f8f9ff2040bd4715fcec9bb0dd21e93c29e0b842",
+  "package_payload_sha256": "fc33956f4a23050ed034fc750d8807b6bffa21310248a8a716163b190df5c8c2",
   "files": [
     {
       "path": ".codex-plugin/plugin.json",
@@ -83,8 +83,8 @@
     },
     {
       "path": "scripts/churn_control.py",
-      "sha256": "1f809aef0c03f4f734ae2d7e27558947242035f346e89ca45dd02b891b003472",
-      "bytes": 64856
+      "sha256": "196ab014becf9c4e15b5113338ebaf15d1614156a612382256c03b58eaf4b92f",
+      "bytes": 66558
     },
     {
       "path": "skills/agent-churn-control/SKILL.md",
@@ -98,8 +98,8 @@
     },
     {
       "path": "tests/test_churn_control.py",
-      "sha256": "55596f0ceee125443147ab337448969d37ace734a73e30953962b58e9188b191",
-      "bytes": 29739
+      "sha256": "b5ae7d3c91868664ae70357e1cd5294f76d10d7202bfc35b0aef597c477a64a3",
+      "bytes": 33951
     }
   ],
   "authority_map_path": "assets/authority-map.json",
