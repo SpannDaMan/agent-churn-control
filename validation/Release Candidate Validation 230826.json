@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "candidate": "agent-churn-control 0.1.0",
-  "product_revision_sha256": "023f1c1dcfa42eb5b9e94ef945a5ee34ccb75f5ad23103fae3e606f50c693399",
+  "product_revision_sha256": "9b14b2f2ac4945f25b4815c34b6c07b05c8568dca3d7be10ea5c2027804e61d2",
   "validated_on": "2026-08-23",
   "status": "pass",
   "checks": {
@@ -25,7 +25,7 @@
     "release_doctrine": "pass public doctrine review records product invariants, authority, claims, and gates",
     "cross_platform_package_manifest": "pass canonical text hashes are line-ending invariant"
   },
-  "package_payload_sha256": "be7dc840938c200183917b0f2dafc648ffa059a822f47c9b0539de59e9f415f4",
+  "package_payload_sha256": "b0317178011636ee166c54035d0555897ba069114ec978f64ac21d9b332fe155",
   "store_copy": {"subtitle":"Stop duplicate agent work","score":96,"claim_boundary":"no demand, savings guarantee, causal model-regression, or endorsement claim"},
   "focus_repair_summary": ["ignored untracked caches cannot enter the public package or self-contaminate validation", "first starter prompt exposes bypass and missing identity fields", "screenshot exposes evidence reuse, private receipt, and unknown cost"],
   "release_disposition": "ready_for_pr_first_publication",

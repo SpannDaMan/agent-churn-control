@@ -31,7 +31,7 @@ PROHIBITED_RECEIPT_KEYS = {
     "token", "credential", "absolute_path", "source_text", "participant_identity",
 }
 OPAQUE_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:@-]{0,127}$")
-PACKAGE_TEXT_SUFFIXES = {".json", ".jsonl", ".md", ".py", ".yaml", ".yml", ".svg"}
+PACKAGE_TEXT_SUFFIXES = {".json", ".jsonl", ".ndjson", ".md", ".py", ".yaml", ".yml", ".svg"}
 ACTION_KINDS = {"targeted_test", "broad_test", "premium_review", "retry", "tool_call", "panel", "plan_revision", "artifact", "promotion"}
 MATERIAL_PROGRESS_STATES = {"yes", "no", "unknown"}
 METRIC_STATUSES = {"measured", "derived", "unknown", "stale"}

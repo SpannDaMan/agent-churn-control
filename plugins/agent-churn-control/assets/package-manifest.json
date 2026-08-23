@@ -4,12 +4,12 @@
   "version": "0.1.0",
   "release_state": "public_release_candidate",
   "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
-  "package_payload_sha256": "be7dc840938c200183917b0f2dafc648ffa059a822f47c9b0539de59e9f415f4",
+  "package_payload_sha256": "b0317178011636ee166c54035d0555897ba069114ec978f64ac21d9b332fe155",
   "files": [
     {"path":".codex-plugin/plugin.json","sha256":"157bcbd128143e89d485c415ec7cc6366548a86ba62335c974f12144e6f545da","bytes":1959},
     {"path":"skills/agent-churn-control/SKILL.md","sha256":"653b2b2a6a80ddd0a190ab280e850f0b1ff8e557f0e1c58e3c7a9fc3d94bd29f","bytes":4209},
     {"path":"skills/agent-churn-control/agents/openai.yaml","sha256":"ef52eeba72ceb2d87e402e0c2647b5de347442f047fce17a653debdee2ed7eae","bytes":221},
-    {"path":"scripts/churn_control.py","sha256":"89ad0f5ee856e36776b65245ad57041791317bed14251c60b2f9448c179d64e0","bytes":32407},
+    {"path":"scripts/churn_control.py","sha256":"0e66263539b5eece50b1feea8fa31434dd72a4031fcc510c2f1b822a350713c4","bytes":32418},
     {"path":"assets/core-policy.json","sha256":"da49f9a221baaf4fe086b381b2af45adc8b8f9deb6c47be539c3119561d078f8","bytes":1604},
     {"path":"assets/contract.schema.json","sha256":"1e87daad0de90e1fc2ec7332a9b5d31ead57697459d445e8b66b2b26842efcb2","bytes":2228},
     {"path":"assets/authority-map.json","sha256":"f5ff497ac1fdfbecbdec42ec7c4df12fca27bf8360a28a516f46d4ddff28d436","bytes":401},
@@ -24,7 +24,7 @@
     {"path":"assets/logo-dark.png","sha256":"ab9334eb5a93380ae5bf5de72ad15614ae902cc86ca1ab84fcf328b990e6e2b2","bytes":146497},
     {"path":"assets/screenshot1.png","sha256":"4af5beabadc14967639d79c243e94c4a7bd533ebe18b0a1721cf705cdf592301","bytes":96356},
     {"path":"fixtures/v1/corpus.ndjson","sha256":"40cf058584088adda5e77be6c0e288ad5ff6251c9af66aaf5285ae7af56dff4d","bytes":3389},
-    {"path":"tests/test_churn_control.py","sha256":"34fbef1769355900dc0f8426eac3a57ed37279b682cd16372e21bf43b7e62f4d","bytes":9419}
+    {"path":"tests/test_churn_control.py","sha256":"8e3a60900c3c2a701c630ef341711d76be697e4a5b5510a8c3cc81ae5d9089bc","bytes":9423}
   ],
   "authority_map_path": "assets/authority-map.json",
   "fixture_corpus_version": "1",
