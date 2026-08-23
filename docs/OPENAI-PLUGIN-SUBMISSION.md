@@ -1,6 +1,6 @@
 # OpenAI Plugin Submission Packet
 
-Agent Churn Control is a skills-only plugin. It has no MCP server, app, authentication, product-managed credentials, network access, telemetry, or hosted data storage.
+Anti-Churn is a skills-only plugin. It has no MCP server, app, authentication, product-managed credentials, network access, telemetry, or hosted data storage.
 
 ## Package
 

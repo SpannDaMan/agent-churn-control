@@ -1,6 +1,6 @@
 # Publication Gate
 
-Agent Churn Control may be published only from a frozen standalone candidate that passes the repository release validator, PR-first GitHub review, hosted CI, public install proof, and provider submission readback.
+Anti-Churn may be published only from a frozen standalone candidate that passes the repository release validator, PR-first GitHub review, hosted CI, public install proof, and provider submission readback.
 
 ## Product contract
 

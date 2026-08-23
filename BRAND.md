@@ -1,8 +1,9 @@
-# Agent Churn Control Brand
+# Anti-Churn Brand
 
 ## Identity Lock
 
-- Product name: Agent Churn Control
+- Public product name: Anti-Churn
+- Stable package and repository slug: `agent-churn-control`
 - Public developer: Orbral
 - Repository owner: SpannDaMan
 - Category: Developer Tools
@@ -17,7 +18,7 @@ Their job is not “use fewer tokens at any cost.” Their job is to preserve ca
 
 ## Positioning
 
-Agent Churn Control is a local, skills-only guard for duplicate work. It sits before an action, computes a deterministic identity, and returns one of four bounded outcomes: bypass, observe, enforce, or promotion gate.
+Anti-Churn is a local, skills-only guard for duplicate work. It sits before an action, computes a deterministic identity, and returns one of four bounded outcomes: bypass, observe, enforce, or promotion gate.
 
 It is not a model router, gateway, scheduler, hosted observability product, usage dashboard, or universal optimizer. It does not promise a percentage reduction in tokens, cost, or latency.
 
@@ -65,7 +66,7 @@ The mark represents a repeated loop interrupted by a clean forward path. A navy-
 
 The visual identity must be original and generated or rebuilt for Orbral. Do not incorporate third-party logos, product UI, copyrighted mascots, or named model marks. Public assets may use the Agent Smith Palette family language but must be distinct from other plugin marks.
 
-Public publication is approved for Agent Churn Control only. Paid promotion, social launch posts, Sponsors/payment setup, permissions/scopes, and unrelated products remain outside this brand packet.
+Public publication is approved for Anti-Churn only. Paid promotion, social launch posts, Sponsors/payment setup, permissions/scopes, and unrelated products remain outside this brand packet.
 
 ## Public Support Boundary
 

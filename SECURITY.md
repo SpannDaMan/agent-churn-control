@@ -8,7 +8,7 @@ Do not include credentials, tokens, private prompts, source contents, customer d
 
 ## Security boundary
 
-Agent Churn Control is local and skills-only. It has no network client, authentication, hosted service, telemetry, model execution, or external-action authority.
+Anti-Churn is local and skills-only. It has no network client, authentication, hosted service, telemetry, model execution, or external-action authority.
 
 A valid receipt must not contain prompts, outputs, command strings, test logs, file contents, secrets, tokens, credentials, raw participant identities, or absolute paths. Externally supplied identifiers are stored as SHA-256 digests.
 

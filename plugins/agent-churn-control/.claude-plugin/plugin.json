@@ -1,0 +1,10 @@
+{
+  "name": "anti-churn",
+  "description": "Use before repeating an agent test, review, retry, tool call, or promotion check; reuse matching evidence and allow valid changed work without stopping the task.",
+  "version": "0.1.1",
+  "author": {"name": "Orbral"},
+  "homepage": "https://github.com/SpannDaMan/agent-churn-control",
+  "repository": "https://github.com/SpannDaMan/agent-churn-control",
+  "license": "MIT",
+  "keywords": ["agent-churn", "duplicate-work", "evidence-reuse", "repeated-tests", "rate-limits", "typed-invalidation", "claude-code"]
+}

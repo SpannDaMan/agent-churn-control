@@ -1,9 +1,9 @@
 {
   "name": "agent-churn-control",
-  "version": "0.1.0",
-  "description": "Stop agents from repeating equivalent local work when accepted evidence can be reused.",
+  "version": "0.1.1",
+  "description": "Use before repeating an agent action to reuse matching evidence, allow valid changed work, and gate only the duplicate local action.",
   "author": {
-    "name": "SpannDaMan",
+    "name": "Orbral",
     "url": "https://github.com/SpannDaMan"
   },
   "homepage": "https://github.com/SpannDaMan/agent-churn-control",
@@ -12,19 +12,19 @@
   "keywords": ["agents", "codex", "duplicate-work", "evidence-reuse", "rate-limits", "receipts"],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Agent Churn Control",
+    "displayName": "Anti-Churn",
     "shortDescription": "Stop duplicate agent work",
-    "longDescription": "Stop agents from rerunning equivalent tests, reviews, retries, and tool calls when accepted evidence already exists. Agent Churn Control runs locally, reuses content-free receipts, permits changed work through typed invalidation, and keeps rate-limit signals advisory—helping preserve capacity without weakening final verification. No account, API key, telemetry, network call, or hosted service.",
+    "longDescription": "Use this before repeating an agent test, review, retry, tool call, or promotion check. Anti-Churn compares the proposed local action with accepted evidence, reuses matching results, permits changed work through typed invalidation, and shows what may be skipped versus what still must run. Do not use rate-limit percentage as stop authority; it gates only the duplicate action and never stops the task, publishes, or changes permissions.",
     "developerName": "Orbral",
     "category": "Developer Tools",
-    "capabilities": ["Local", "Evidence reuse", "Duplicate-work control", "No credentials"],
+    "capabilities": ["Check before repeated agent actions", "Reuse matching accepted evidence", "Allow changed work through typed invalidation", "Keep rate telemetry advisory", "Run locally with no credentials"],
     "websiteURL": "https://github.com/SpannDaMan/agent-churn-control",
     "privacyPolicyURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
     "defaultPrompt": [
-      "Check this local action; show the pending reservation or missing identity fields.",
-      "Reuse accepted evidence and show what still needs verification.",
-      "Audit this agent run for repeated tests, reviews, retries, and polling."
+      "Before rerunning this test suite, check whether accepted evidence already covers the same candidate and requirements.",
+      "This candidate changed. Tell me which checks are actually invalidated and which results I can reuse.",
+      "Audit this long agent task for repeated tests, reviews, retries, polling, and duplicate status updates."
     ],
     "brandColor": "#0A6CFF",
     "composerIcon": "./assets/icon.png",

@@ -1,4 +1,4 @@
-# Agent Churn Control Design System
+# Anti-Churn Design System
 
 ## Machine-Readable Tokens
 

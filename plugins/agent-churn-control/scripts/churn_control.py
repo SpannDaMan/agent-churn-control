@@ -877,7 +877,7 @@ def verify_package(manifest_path: Path) -> list[str]:
     }
     if set(manifest) != expected_manifest_fields:
         errors.append("package manifest fields are invalid")
-    if manifest.get("schema_version") != "1.0" or manifest.get("plugin_id") != "agent-churn-control" or manifest.get("version") != "0.1.0":
+    if manifest.get("schema_version") != "1.0" or manifest.get("plugin_id") != "agent-churn-control" or manifest.get("version") != "0.1.1":
         errors.append("package manifest identity is invalid")
     if manifest.get("release_state") not in {"public_release_candidate", "published"}:
         errors.append("package release_state is invalid")

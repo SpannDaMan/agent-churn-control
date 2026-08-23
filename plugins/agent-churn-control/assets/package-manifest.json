@@ -1,15 +1,20 @@
 {
   "schema_version": "1.0",
   "plugin_id": "agent-churn-control",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "release_state": "public_release_candidate",
   "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
-  "package_payload_sha256": "fc33956f4a23050ed034fc750d8807b6bffa21310248a8a716163b190df5c8c2",
+  "package_payload_sha256": "980be03dfbf38a59176048829683dc0024b07e5403f1fb8b301794ca4c3c3f77",
   "files": [
     {
+      "path": ".claude-plugin/plugin.json",
+      "sha256": "e2d0b02c8e5d1a861a6df653b80d33e776a0e52ed1b5188beacc2885ff8a7cf5",
+      "bytes": 556
+    },
+    {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "0e7d4dbb6aba2f152660fc2bee3c5287068e92c764c840fe207b08c2e614d400",
-      "bytes": 1917
+      "sha256": "501f0720042ca2e537d0047aa80a7dec968fae8fa1ae6cddbe43f05217138807",
+      "bytes": 2213
     },
     {
       "path": "assets/Agent Churn Control Vector Dark 230826.svg",
@@ -83,18 +88,18 @@
     },
     {
       "path": "scripts/churn_control.py",
-      "sha256": "196ab014becf9c4e15b5113338ebaf15d1614156a612382256c03b58eaf4b92f",
+      "sha256": "9f603233828a04bd6b4fbb4e4413b705fabe8235e22e7ca642e883986c76df78",
       "bytes": 66558
     },
     {
       "path": "skills/agent-churn-control/SKILL.md",
-      "sha256": "309326ef58f8cef0adf3d59e5e58370352854797d1f97e50643af73ad4955bb9",
-      "bytes": 5112
+      "sha256": "66ce98f0906acb27554d64a4e388206eb58134a0a664fd15684f9e5b52b3c3d1",
+      "bytes": 5046
     },
     {
       "path": "skills/agent-churn-control/agents/openai.yaml",
-      "sha256": "f9f299487a1b186b3d1c8941dab10c1c327f8c1cbf12dd8739b18656ec9cc5e0",
-      "bytes": 228
+      "sha256": "dd33b3e514677bd7b5be7a17634eab346552e74394fe20044b73a72ef1bb2d15",
+      "bytes": 219
     },
     {
       "path": "tests/test_churn_control.py",

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the standalone Agent Churn Control public release candidate."""
+"""Validate the standalone Anti-Churn public release candidate."""
 
 from __future__ import annotations
 
@@ -22,11 +22,11 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins" / "agent-churn-control"
 CORE = PLUGIN / "scripts" / "churn_control.py"
 EXPECTED_SUBTITLE = "Stop duplicate agent work"
-EXPECTED_LONG = "Stop agents from rerunning equivalent tests, reviews, retries, and tool calls when accepted evidence already exists. Agent Churn Control runs locally, reuses content-free receipts, permits changed work through typed invalidation, and keeps rate-limit signals advisory—helping preserve capacity without weakening final verification. No account, API key, telemetry, network call, or hosted service."
+EXPECTED_LONG = "Use this before repeating an agent test, review, retry, tool call, or promotion check. Anti-Churn compares the proposed local action with accepted evidence, reuses matching results, permits changed work through typed invalidation, and shows what may be skipped versus what still must run. Do not use rate-limit percentage as stop authority; it gates only the duplicate action and never stops the task, publishes, or changes permissions."
 EXPECTED_PROMPTS = [
-    "Check this local action; show the pending reservation or missing identity fields.",
-    "Reuse accepted evidence and show what still needs verification.",
-    "Audit this agent run for repeated tests, reviews, retries, and polling.",
+    "Before rerunning this test suite, check whether accepted evidence already covers the same candidate and requirements.",
+    "This candidate changed. Tell me which checks are actually invalidated and which results I can reuse.",
+    "Audit this long agent task for repeated tests, reviews, retries, polling, and duplicate status updates.",
 ]
 
 REQUIRED_FILES = (
@@ -34,14 +34,15 @@ REQUIRED_FILES = (
     "design.tokens.json", "CHANGELOG.md", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md",
     "PRIVACY.md", "PROVENANCE.md", "PUBLICATION-GATE.md", "RELEASE-CHECKLIST.md",
     "SECURITY.md", "SUPPORT.md", "TERMS.md", "THREAT-MODEL.md",
-    ".agents/plugins/marketplace.json", ".github/workflows/test.yml",
+    ".agents/plugins/marketplace.json", ".claude-plugin/marketplace.json", ".github/workflows/test.yml",
     ".github/ISSUE_TEMPLATE/bug_report.yml", ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/ISSUE_TEMPLATE/config.yml", ".github/PULL_REQUEST_TEMPLATE.md",
-    "docs/CODEX-INSTALL.md", "docs/DECISIONS-AND-RECEIPTS.md", "docs/EVALUATION.md",
+    "docs/CODEX-INSTALL.md", "docs/CLAUDE-INSTALL.md", "docs/DECISIONS-AND-RECEIPTS.md", "docs/EVALUATION.md",
     "docs/OPENAI-PLUGIN-SUBMISSION.md", "submission/openai-plugin-submission.json",
     "tests/test_release_validator.py",
     "tools/build_package_manifest.py", "tools/render_store_assets.py", "tools/validate_release_candidate.py",
     "plugins/agent-churn-control/.codex-plugin/plugin.json",
+    "plugins/agent-churn-control/.claude-plugin/plugin.json",
     "plugins/agent-churn-control/skills/agent-churn-control/SKILL.md",
     "plugins/agent-churn-control/skills/agent-churn-control/agents/openai.yaml",
     "plugins/agent-churn-control/scripts/churn_control.py",
@@ -61,6 +62,7 @@ REQUIRED_FILES = (
     "plugins/agent-churn-control/assets/logo-dark.png",
     "plugins/agent-churn-control/assets/screenshot1.png",
     "plugins/agent-churn-control/fixtures/v1/corpus.ndjson",
+    "evals/agent-churn-control-activation-golden.json",
 )
 
 TEXT_SUFFIXES = {".md", ".txt", ".json", ".jsonl", ".py", ".yml", ".yaml", ".svg"}
@@ -177,23 +179,25 @@ def validate_metadata() -> list[str]:
     manifest = load_json(PLUGIN / ".codex-plugin" / "plugin.json")
     submission = load_json(ROOT / "submission" / "openai-plugin-submission.json")
     marketplace = load_json(ROOT / ".agents" / "plugins" / "marketplace.json")
+    claude_marketplace = load_json(ROOT / ".claude-plugin" / "marketplace.json")
+    claude_plugin = load_json(PLUGIN / ".claude-plugin" / "plugin.json")
     policy = load_json(PLUGIN / "assets" / "core-policy.json")
     contract = load_json(PLUGIN / "assets" / "contract.schema.json")
     measurement = load_json(PLUGIN / "assets" / "sample-efficiency-measurement.json")
     skill_text = (PLUGIN / "skills" / "agent-churn-control" / "SKILL.md").read_text(encoding="utf-8-sig")
     expected = {
-        "name": "agent-churn-control", "version": "0.1.0", "license": "MIT",
+        "name": "agent-churn-control", "version": "0.1.1", "license": "MIT",
         "homepage": "https://github.com/SpannDaMan/agent-churn-control",
         "repository": "https://github.com/SpannDaMan/agent-churn-control",
     }
     for field, value in expected.items():
         if manifest.get(field) != value:
             errors.append(f"plugin.json {field} mismatch")
-    if manifest.get("author", {}).get("name") != "SpannDaMan":
-        errors.append("plugin author must be SpannDaMan")
+    if manifest.get("author", {}).get("name") != "Orbral":
+        errors.append("plugin author must be Orbral")
     interface = manifest.get("interface", {})
     checks = {
-        "displayName": "Agent Churn Control", "shortDescription": EXPECTED_SUBTITLE,
+        "displayName": "Anti-Churn", "shortDescription": EXPECTED_SUBTITLE,
         "longDescription": EXPECTED_LONG, "developerName": "Orbral", "category": "Developer Tools",
         "privacyPolicyURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
         "termsOfServiceURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
@@ -203,6 +207,8 @@ def validate_metadata() -> list[str]:
             errors.append(f"plugin interface {field} mismatch")
     if interface.get("defaultPrompt") != EXPECTED_PROMPTS:
         errors.append("plugin starter prompts drifted")
+    if "screenshots" in interface:
+        errors.append("skills-only plugin must not declare interface.screenshots")
     for field in ("composerIcon", "logo", "logoDark"):
         value = interface.get(field)
         if not isinstance(value, str) or not (PLUGIN / value).is_file():
@@ -211,10 +217,14 @@ def validate_metadata() -> list[str]:
         errors.append("skills-only plugin must not declare interface.screenshots")
     if submission.get("short_description") != EXPECTED_SUBTITLE or submission.get("long_description") != EXPECTED_LONG:
         errors.append("submission copy drifted")
+    if submission.get("plugin_name") != "Anti-Churn":
+        errors.append("submission plugin_name must be Anti-Churn")
     if submission.get("starter_prompts") != EXPECTED_PROMPTS:
         errors.append("submission prompts drifted")
     if submission.get("publisher") != "Orbral" or submission.get("submission_type") != "skills_only":
         errors.append("submission publisher or type mismatch")
+    if len(submission.get("positive_tests", [])) != 5 or len(submission.get("negative_tests", [])) != 3:
+        errors.append("submission must contain five positive and three negative tests")
     if '"<PLUGIN_ROOT>/scripts/churn_control.py"' not in skill_text or "never resolve plugin files from the user's project working directory" not in skill_text:
         errors.append("skill installed-root command routing is missing")
     metric_properties = contract.get("properties", {}).get("metrics", {}).get("items", {}).get("properties", {})
@@ -241,6 +251,52 @@ def validate_metadata() -> list[str]:
             errors.append("marketplace plugin entry mismatch")
         if entry.get("policy") != {"installation":"AVAILABLE", "authentication":"ON_INSTALL"}:
             errors.append("marketplace policy mismatch")
+    claude_entries = claude_marketplace.get("plugins", [])
+    if claude_marketplace.get("name") != "agent-churn-control" or claude_marketplace.get("owner", {}).get("name") != "Orbral" or len(claude_entries) != 1:
+        errors.append("Claude marketplace root mismatch")
+    else:
+        claude_entry = claude_entries[0]
+        if claude_entry.get("name") != "anti-churn" or claude_entry.get("source") != "./plugins/agent-churn-control" or claude_entry.get("version") != "0.1.1":
+            errors.append("Claude marketplace plugin entry mismatch")
+    if claude_plugin.get("name") != "anti-churn" or claude_plugin.get("version") != "0.1.1" or claude_plugin.get("author", {}).get("name") != "Orbral":
+        errors.append("Claude plugin identity mismatch")
+    return errors
+
+
+def validate_activation_suite() -> list[str]:
+    errors: list[str] = []
+    suite = load_json(ROOT / "evals" / "agent-churn-control-activation-golden.json")
+    expected_fields = {"id", "class", "prompt", "expected_activation", "expected_behavior", "prohibited_behavior", "evidence_oracle"}
+    cases = suite.get("cases", [])
+    if suite.get("schema_version") != "1.0" or suite.get("plugin") != "agent-churn-control":
+        errors.append("activation suite identity mismatch")
+    if not isinstance(cases, list) or len(cases) != 30:
+        return errors + ["activation suite must contain exactly 30 cases"]
+    counts = {"direct": 0, "indirect": 0, "negative": 0}
+    seen_ids: set[str] = set()
+    seen_prompts: set[str] = set()
+    for index, case in enumerate(cases):
+        if not isinstance(case, dict) or set(case) != expected_fields:
+            errors.append(f"activation case {index} fields mismatch")
+            continue
+        case_id = str(case.get("id", ""))
+        case_class = str(case.get("class", ""))
+        prompt = str(case.get("prompt", "")).casefold()
+        if not case_id or case_id in seen_ids or not prompt or prompt in seen_prompts:
+            errors.append(f"activation case {index} identity is missing or duplicated")
+        seen_ids.add(case_id)
+        seen_prompts.add(prompt)
+        if case_class not in counts:
+            errors.append(f"activation case {case_id} class is invalid")
+            continue
+        counts[case_class] += 1
+        if case.get("expected_activation") is not (case_class in {"direct", "indirect"}):
+            errors.append(f"activation case {case_id} expectation conflicts with class")
+        for field in ("expected_behavior", "prohibited_behavior", "evidence_oracle"):
+            if not isinstance(case.get(field), str) or not case[field].strip():
+                errors.append(f"activation case {case_id} {field} is empty")
+    if counts != {"direct": 10, "indirect": 10, "negative": 10}:
+        errors.append(f"activation class counts mismatch: {counts}")
     return errors
 
 
@@ -295,12 +351,13 @@ def run_validation() -> dict[str, Any]:
         "json": validate_json(),
         "metadata": validate_metadata(),
         "assets": validate_assets(),
+        "activation_suite": validate_activation_suite(),
         "runtime": validate_runtime(),
     }
     errors = sorted({error for group in checks.values() for error in group})
     return {
         "status": "pass" if not errors else "fail",
-        "candidate": "agent-churn-control 0.1.0",
+        "candidate": "agent-churn-control 0.1.1",
         "product_revision_sha256": product_revision(),
         "checks": {name: "pass" if not group else "fail" for name, group in checks.items()},
         "errors": errors,

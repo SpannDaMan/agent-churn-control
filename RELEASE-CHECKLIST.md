@@ -8,7 +8,7 @@
 - [ ] Release validator reports one frozen candidate hash.
 - [ ] Submission ZIP matches the frozen hash and contains no generated residue.
 - [ ] GitHub feature branch, PR, mergeability, review, and CI pass.
-- [ ] Public v0.1.0 tag and release target the merged commit.
+- [ ] Public v0.1.1 tag and release target the merged commit.
 - [ ] Private vulnerability reporting is enabled.
 - [ ] Clean Codex marketplace installation passes.
 - [ ] OpenAI skills-only upload, skill validation, attestations, approval, publication, and public readback match the prepared packet.

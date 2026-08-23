@@ -1,34 +1,36 @@
 {
   "schema_version": "1.0",
   "submission_type": "skills_only",
-  "plugin_name": "Agent Churn Control",
+  "plugin_name": "Anti-Churn",
   "package_name": "agent-churn-control",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "Orbral",
   "category": "Developer Tools",
   "short_description": "Stop duplicate agent work",
-  "long_description": "Stop agents from rerunning equivalent tests, reviews, retries, and tool calls when accepted evidence already exists. Agent Churn Control runs locally, reuses content-free receipts, permits changed work through typed invalidation, and keeps rate-limit signals advisory—helping preserve capacity without weakening final verification. No account, API key, telemetry, network call, or hosted service.",
+  "long_description": "Use this before repeating an agent test, review, retry, tool call, or promotion check. Anti-Churn compares the proposed local action with accepted evidence, reuses matching results, permits changed work through typed invalidation, and shows what may be skipped versus what still must run. Do not use rate-limit percentage as stop authority; it gates only the duplicate action and never stops the task, publishes, or changes permissions.",
   "website_url": "https://github.com/SpannDaMan/agent-churn-control",
   "support_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/SUPPORT.md",
   "privacy_policy_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
   "terms_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
   "starter_prompts": [
-    "Check this local action; show the pending reservation or missing identity fields.",
-    "Reuse accepted evidence and show what still needs verification.",
-    "Audit this agent run for repeated tests, reviews, retries, and polling."
+    "Before rerunning this test suite, check whether accepted evidence already covers the same candidate and requirements.",
+    "This candidate changed. Tell me which checks are actually invalidated and which results I can reuse.",
+    "Audit this long agent task for repeated tests, reviews, retries, polling, and duplicate status updates."
   ],
-  "capabilities": ["Local", "Evidence reuse", "Duplicate-work control", "No credentials"],
+  "capabilities": ["Check before repeated agent actions", "Reuse matching accepted evidence", "Allow changed work through typed invalidation", "Keep rate telemetry advisory", "Run locally with no credentials"],
   "positive_tests": [
-    {"id":"POS-1","prompt":"Check this local action; show the pending reservation or missing identity fields.","expected_behavior":"Build the local action identity and reserve one complete first action without claiming that it passed.","expected_result_shape":"A pending bypass reservation or a precise list of missing identity fields."},
-    {"id":"POS-2","prompt":"Reuse accepted evidence and show what still needs verification.","expected_behavior":"Identify equivalent accepted evidence, block only the duplicate local action, and preserve any distinct final verification.","expected_result_shape":"A reuse_prior_evidence decision with content-free receipt references."},
-    {"id":"POS-3","prompt":"This candidate changed. Validate the invalidation and let me rerun the affected check.","expected_behavior":"Require canonical prior-receipt and action-scope binding, then allow one re-execution only when the typed invalidation is valid and unconsumed.","expected_result_shape":"An allow_reexecution or specific invalidation rejection."}
+    {"id":"POS-1","prompt":"Before rerunning this test suite, check whether accepted evidence already covers the same candidate and requirements.","expected_behavior":"Compare the proposed action identity with accepted evidence and reuse a matching result without claiming more than the receipt proves.","expected_result_shape":"A reuse_prior_evidence decision or a precise explanation of why the action is materially new."},
+    {"id":"POS-2","prompt":"This candidate changed. Tell me which checks are actually invalidated and which results I can reuse.","expected_behavior":"Require a typed identity-bound invalidation, permit only affected re-execution, and preserve still-valid evidence.","expected_result_shape":"A bounded allow_reexecution decision plus reusable and invalidated evidence sets."},
+    {"id":"POS-3","prompt":"Audit this long agent task for repeated tests, reviews, retries, polling, and duplicate status updates.","expected_behavior":"Classify repeated activity across the declared churn dimensions without treating material progress as proof that no churn exists.","expected_result_shape":"A content-free churn assessment with evidence, unknowns, and the smallest local intervention."},
+    {"id":"POS-4","prompt":"This is the first complete solo action. Reserve it without requiring a plan or claiming that it passed.","expected_behavior":"Return a bypass pending reservation when identity is complete and require later evidence acceptance before reuse.","expected_result_shape":"A pending reservation with the exact next acceptance step."},
+    {"id":"POS-5","prompt":"Check whether this frozen release candidate is ready for its one final promotion gate.","expected_behavior":"Verify the frozen candidate, package integrity, authority map, and unresolved findings without publishing or installing.","expected_result_shape":"A promotion readiness decision with explicit blockers or reusable evidence."}
   ],
   "negative_tests": [
     {"id":"NEG-1","prompt":"We are at 100% usage. Stop the whole task.","expected_behavior":"Keep rate telemetry advisory and state that the plugin can gate only the named local action.","why_not_complete":"Usage percentage alone is not stop authority."},
     {"id":"NEG-2","prompt":"Repeat the same passing test because this is attempt two.","expected_behavior":"Reuse prior evidence because attempt ID does not make equivalent work new.","why_not_complete":"A changed attempt ID is not typed invalidation."},
     {"id":"NEG-3","prompt":"Put the full prompt and command in the receipt so I can debug it.","expected_behavior":"Reject content-bearing receipt fields and retain only typed values and digests.","why_not_complete":"Receipt privacy forbids prompts, commands, and raw content."}
   ],
-  "release_notes": "Initial skills-only public release. Local deterministic duplicate-work control, typed invalidation, content-free receipts, cross-process state serialization, and twenty-three fixture cases; no apps, MCP server, credentials, network, telemetry, or hosted service.",
+  "release_notes": "Initial skills-only release of Anti-Churn. The listing now explains the repeat-action trigger, evidence-reuse result, changed-work invalidation, advisory rate boundary, and local-action-only authority in plain language. The package includes content-free receipts, cross-process state serialization, five positive reviewer cases, three negative cases, and twenty-three runtime fixtures.",
   "evidence_boundary": "Synthetic engineering evidence; no demand, guaranteed-savings, causal model-regression, or OpenAI-endorsement claim.",
   "publication_action": "authorized_pending_frozen_gate"
 }
