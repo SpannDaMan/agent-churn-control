@@ -4,12 +4,12 @@
   "version": "0.1.0",
   "release_state": "public_release_candidate",
   "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
-  "package_payload_sha256": "64d035ba41db70a80382ad45e5f121c7562dd28129f84085c57dae10e00b711e",
+  "package_payload_sha256": "897e69b844515ad1d3639c26f8f9ff2040bd4715fcec9bb0dd21e93c29e0b842",
   "files": [
     {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "df9a7704577ca5ef73c68b51b830b77995b9d8648ac779e903548650f583a609",
-      "bytes": 1966
+      "sha256": "0e7d4dbb6aba2f152660fc2bee3c5287068e92c764c840fe207b08c2e614d400",
+      "bytes": 1917
     },
     {
       "path": "assets/Agent Churn Control Vector Dark 230826.svg",
@@ -33,8 +33,8 @@
     },
     {
       "path": "assets/contract.schema.json",
-      "sha256": "5648d25dcd9a5ae1c555e2c1473a076e74ae008f28507bdc145c747ccd35d85f",
-      "bytes": 6313
+      "sha256": "0bfb2d8e9284098a621f9329a6fd9fa8938c3355e6a275b53ca1cedf7fec89fd",
+      "bytes": 7094
     },
     {
       "path": "assets/core-policy.json",
@@ -58,18 +58,18 @@
     },
     {
       "path": "assets/sample-efficiency-measurement.json",
-      "sha256": "c589ac2ed3e75ac12a26c25e9508da8b9fb4e4fab84596e44bbc07e428d03ac3",
-      "bytes": 868
+      "sha256": "ef877f617577ed729223beb0b7f6434d0afd6fe4a86527b6e08ff92a2019262b",
+      "bytes": 1063
     },
     {
       "path": "assets/sample-event.json",
-      "sha256": "388cc4c30c85ca3183b166c1949bf1905b30a7013a1dcd2ed53387dfafc93db3",
+      "sha256": "adbf10f528b06c581c4c38fbab4c5f4795ff33e9804791b0b4c30320613f1fde",
       "bytes": 932
     },
     {
       "path": "assets/sample-receipt.json",
-      "sha256": "44eadabf5f5917195ab617b29c5c60e6728c0e063681d400b76129d04e0fae5f",
-      "bytes": 1967
+      "sha256": "b4fec0beafab8a8a5411df992e6ee434e78806d77e4d2c3754c7e88789684dfd",
+      "bytes": 2047
     },
     {
       "path": "assets/screenshot1.png",
@@ -83,8 +83,8 @@
     },
     {
       "path": "scripts/churn_control.py",
-      "sha256": "20298753bd9874a8abd8fac3c0bf24ec39ef8a549bc2eab16ef99b4180079753",
-      "bytes": 58123
+      "sha256": "1f809aef0c03f4f734ae2d7e27558947242035f346e89ca45dd02b891b003472",
+      "bytes": 64856
     },
     {
       "path": "skills/agent-churn-control/SKILL.md",
@@ -98,8 +98,8 @@
     },
     {
       "path": "tests/test_churn_control.py",
-      "sha256": "b0abba0b45b686aa465b980b5b08da98c299eb69d8a7aef47d1258cabd6e556a",
-      "bytes": 23991
+      "sha256": "55596f0ceee125443147ab337448969d37ace734a73e30953962b58e9188b191",
+      "bytes": 29739
     }
   ],
   "authority_map_path": "assets/authority-map.json",

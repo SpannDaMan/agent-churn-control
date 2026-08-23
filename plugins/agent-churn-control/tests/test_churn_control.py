@@ -415,6 +415,72 @@ def test_fabricated_invalidation_delta_is_rejected() -> None:
     assert receipt["reason_code"] == "invalidation_invalid"
 
 
+def test_stale_invalidation_cannot_override_current_accepted_evidence() -> None:
+    history = accepted_chain()
+    changed = event()
+    changed["event_id"] = "candidate-v2-reservation"
+    changed["candidate_digest"] = core.digest({"candidate": "v2"})
+    record = {
+        "schema_version": "1.0",
+        "invalidates": [history[-1]["receipt_id"]],
+        "action_scope_digest": history[-1]["action_key_scope_digest"],
+        "reason_code": "candidate_changed",
+        "changes": [{"field": "candidate_digest", "before": history[-1]["candidate_digest"], "after": changed["candidate_digest"]}],
+        "evidence": [{"kind": "candidate_digest", "digest": changed["candidate_digest"]}],
+    }
+    record["invalidation_id"] = core.invalidation_fingerprint(record)
+    changed["invalidation"] = record
+    reservation = core.build_receipt(changed, history, POLICY)
+    acceptance = core.build_acceptance_event(changed, reservation, core.digest("v2-pass"), "pass")
+    accepted = core.build_receipt(acceptance, [*history, reservation], POLICY)
+
+    replay = event()
+    replay["event_id"] = "candidate-v2-stale-invalidation"
+    replay["candidate_digest"] = changed["candidate_digest"]
+    replay["invalidation"] = record
+    blocked = core.build_receipt(replay, [*history, reservation, accepted], POLICY)
+    assert blocked["decision"] == "block_this_local_action"
+    assert blocked["reason_code"] == "invalidation_does_not_target_current_prior"
+
+
+def test_environment_change_evidence_must_match_current_digest() -> None:
+    history = accepted_chain()
+    changed = event()
+    changed["event_id"] = "environment-v2"
+    changed["environment_digest"] = core.digest({"environment": "v2"})
+    record = {
+        "schema_version": "1.0",
+        "invalidates": [history[-1]["receipt_id"]],
+        "action_scope_digest": history[-1]["action_key_scope_digest"],
+        "reason_code": "environment_changed",
+        "changes": [{"field": "environment_digest", "before": history[-1]["environment_digest"], "after": changed["environment_digest"]}],
+        "evidence": [{"kind": "environment_digest", "digest": core.digest({"environment": "unrelated"})}],
+    }
+    record["invalidation_id"] = core.invalidation_fingerprint(record)
+    changed["invalidation"] = record
+    blocked = core.build_receipt(changed, history, POLICY)
+    assert blocked["reason_code"] == "invalidation_invalid"
+
+
+def test_pending_timeout_can_transition_to_one_retry() -> None:
+    source = event()
+    reservation = core.build_receipt(source, [], POLICY)
+    retry = event()
+    retry["event_id"] = "retry-after-timeout"
+    retry["invalidation"] = transient_invalidation(reservation, "timeout")
+    retry_reservation = core.build_receipt(retry, [reservation], POLICY)
+    assert retry_reservation["decision"] == "allow_reexecution"
+    assert retry_reservation["invalidation_target_receipt_id"] == reservation["receipt_id"]
+    assert core.valid_digest(retry_reservation["invalidation_transition_id"])
+
+    acceptance = core.build_acceptance_event(retry, retry_reservation, core.digest("retry-pass"), "pass")
+    accepted = core.build_receipt(acceptance, [reservation, retry_reservation], POLICY)
+    later = event()
+    later["event_id"] = "after-timeout-retry"
+    reused = core.build_receipt(later, [reservation, retry_reservation, accepted], POLICY)
+    assert reused["decision"] == "reuse_prior_evidence"
+
+
 def test_transient_retry_budget_is_per_work_key() -> None:
     history = accepted_chain()
     retry = event()
@@ -438,6 +504,61 @@ def test_transient_retry_budget_is_per_work_key() -> None:
     blocked = core.build_receipt(second_retry, [*history, reservation, accepted], POLICY)
     assert blocked["decision"] == "block_this_local_action"
     assert blocked["reason_code"] == "transient_retry_budget_exhausted"
+
+
+def test_state_rejects_non_object_records(tmp_path: Path) -> None:
+    state = tmp_path / "state.ndjson"
+    state.write_text("null\n", encoding="utf-8")
+    try:
+        core.load_receipts(state)
+    except ValueError as exc:
+        assert "state line 1 must be a receipt object" in str(exc)
+    else:
+        raise AssertionError("non-object state record was silently ignored")
+
+
+def test_malformed_enum_values_return_errors_instead_of_crashing() -> None:
+    malformed = event()
+    malformed["action_kind"] = {}
+    assert "action_kind is invalid" in core.validate_event(malformed, POLICY)
+    malformed = event()
+    malformed["material_progress"] = {"status": [], "evidence_digest": None}
+    assert "material_progress is invalid" in core.validate_event(malformed, POLICY)
+    malformed = event()
+    malformed["metrics"] = [{"name": "input_tokens", "status": {}, "value": None, "unit": "tokens", "source_ref": None, "basis_receipt_ids": []}]
+    assert any("invalid status" in item for item in core.validate_event(malformed, POLICY))
+
+    receipt = core.build_receipt(event(), [], POLICY)
+    for field in ("action_kind", "intervention_level", "decision", "reason_code", "outcome"):
+        altered = dict(receipt)
+        altered[field] = []
+        reseal(altered)
+        assert core.verify_receipt(altered)
+
+
+def test_promotion_requested_must_be_boolean() -> None:
+    malformed = event()
+    malformed["promotion_requested"] = "true"
+    assert "promotion_requested must be boolean" in core.validate_event(malformed, POLICY)
+
+
+def test_event_policy_digest_must_match_active_policy() -> None:
+    malformed = event()
+    malformed["policy_digest"] = core.digest({"policy": "other"})
+    assert "policy_digest does not match the active policy" in core.validate_event(malformed, POLICY)
+
+
+def test_missing_invalidation_fields_are_deterministically_ordered() -> None:
+    errors = core.validate_invalidation({}, None, set(), POLICY, event=event())
+    assert errors[:7] == [
+        "invalidation missing field: schema_version",
+        "invalidation missing field: invalidation_id",
+        "invalidation missing field: invalidates",
+        "invalidation missing field: action_scope_digest",
+        "invalidation missing field: reason_code",
+        "invalidation missing field: changes",
+        "invalidation missing field: evidence",
+    ]
 
 
 def test_receipt_verifier_enforces_complete_nested_schema() -> None:

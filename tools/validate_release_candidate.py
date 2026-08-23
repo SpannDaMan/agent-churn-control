@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
 import os
 from pathlib import Path
@@ -148,10 +147,8 @@ def validate_text_safety() -> list[str]:
             continue
         try:
             raw = path.read_bytes()
-            if b"\0" in raw:
-                continue
-            text = raw.decode("utf-8-sig")
-        except (OSError, UnicodeDecodeError):
+            text = raw.decode("utf-8-sig", errors="ignore")
+        except OSError:
             continue
         lower = text.lower()
         for marker in PRIVATE_MARKERS:
@@ -182,6 +179,7 @@ def validate_metadata() -> list[str]:
     marketplace = load_json(ROOT / ".agents" / "plugins" / "marketplace.json")
     policy = load_json(PLUGIN / "assets" / "core-policy.json")
     contract = load_json(PLUGIN / "assets" / "contract.schema.json")
+    measurement = load_json(PLUGIN / "assets" / "sample-efficiency-measurement.json")
     skill_text = (PLUGIN / "skills" / "agent-churn-control" / "SKILL.md").read_text(encoding="utf-8-sig")
     expected = {
         "name": "agent-churn-control", "version": "0.1.0", "license": "MIT",
@@ -209,8 +207,8 @@ def validate_metadata() -> list[str]:
         value = interface.get(field)
         if not isinstance(value, str) or not (PLUGIN / value).is_file():
             errors.append(f"plugin asset missing: {field}")
-    if interface.get("screenshots") != ["./assets/screenshot1.png"]:
-        errors.append("plugin screenshot metadata mismatch")
+    if "screenshots" in interface:
+        errors.append("skills-only plugin must not declare interface.screenshots")
     if submission.get("short_description") != EXPECTED_SUBTITLE or submission.get("long_description") != EXPECTED_LONG:
         errors.append("submission copy drifted")
     if submission.get("starter_prompts") != EXPECTED_PROMPTS:
@@ -224,6 +222,17 @@ def validate_metadata() -> list[str]:
         errors.append("contract metric names drifted from runtime policy")
     if set(metric_properties.get("unit", {}).get("enum", [])) != set(policy.get("allowed_metric_units", [])):
         errors.append("contract metric units drifted from runtime policy")
+    invalidation_properties = contract.get("$defs", {}).get("invalidation", {}).get("properties", {})
+    if invalidation_properties.get("invalidates", {}).get("maxItems") != 1:
+        errors.append("contract invalidation cardinality drifted from runtime")
+    change_items = invalidation_properties.get("changes", {}).get("items", {})
+    if set(change_items.get("required", [])) != {"field", "before", "after"} or change_items.get("additionalProperties") is not False:
+        errors.append("contract invalidation change shape drifted from runtime")
+    evidence_kind_enum = invalidation_properties.get("evidence", {}).get("items", {}).get("properties", {}).get("kind", {}).get("enum", [])
+    if set(evidence_kind_enum) != set(policy.get("allowed_evidence_kinds", [])):
+        errors.append("contract invalidation evidence kinds drifted from runtime policy")
+    if measurement.get("measured_example", {}).get("basis_receipt_ids") != measurement.get("basis_receipt_ids"):
+        errors.append("sample efficiency metric basis is not self-contained")
     if marketplace.get("name") != "agent-churn-control" or len(marketplace.get("plugins", [])) != 1:
         errors.append("marketplace root mismatch")
     else:

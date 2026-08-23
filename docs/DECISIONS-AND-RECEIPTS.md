@@ -19,7 +19,7 @@ Provide either an `environment_digest` or `environment_independent: true`. Omitt
 
 ## Receipt privacy
 
-An `allow`, `allow_with_advisory`, or `allow_reexecution` receipt remains `pending`. It cannot be reused. The `accept` command verifies the pending reservation, preserves the same work identity, and emits a separately checksummed receipt with `evidence_accepted: true` and a content-free evidence digest. Exact event-ID replay returns the original decision; a later action request must use a new event ID.
+An `allow`, `allow_with_advisory`, or `allow_reexecution` receipt remains `pending`. It cannot be reused. The `accept` command verifies the pending reservation, preserves the same work identity, and emits a separately checksummed receipt with `evidence_accepted: true` and a content-free evidence digest. Exact replay of a pending event returns a local duplicate-action block; a later distinct action request must use a new event ID.
 
 External identifiers are stored as SHA-256 digests. Metrics use bounded names, statuses, units, numeric values, nulls, and digest references. Unknown and stale values remain null.
 

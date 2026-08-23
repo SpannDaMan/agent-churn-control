@@ -17,7 +17,7 @@ Agent Churn Control is a skills-only plugin. It has no MCP server, app, authenti
 3. Confirm support, privacy, terms, repository, and release URLs resolve publicly.
 4. Build the skills-only ZIP from the frozen release tree with no Git/cache residue.
 5. Upload through OpenAI Platform Plugins > Create plugin > Skills only.
-6. Verify the imported Orbral metadata, three prompts, one skill, and four image fields.
+6. Verify the imported Orbral metadata, three prompts, one skill, and skills-only branding images; keep `interface.screenshots` excluded.
 7. Run the positive and negative tests from the submission JSON.
 8. Submit and publish only after the skill passes provider validation and the established policy attestations remain identical.
 

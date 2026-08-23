@@ -8,7 +8,7 @@
   "requirements_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "candidate_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
   "dependency_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-  "policy_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "policy_digest": "sha256:fe1fd764135a92b738e8d2049f8726ed7eeda032fadacf2f1b79c8814c3933f7",
   "evaluator_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
   "environment_independent": true,
   "material_progress": {"status": "unknown", "evidence_digest": null},

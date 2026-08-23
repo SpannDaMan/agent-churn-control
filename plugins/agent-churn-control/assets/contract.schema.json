@@ -113,22 +113,38 @@
       "properties": {
         "schema_version": {"const": "1.0"},
         "invalidation_id": {"$ref": "#/$defs/digest"},
-        "invalidates": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/digest"}},
+        "invalidates": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"$ref": "#/$defs/digest"}},
         "action_scope_digest": {"$ref": "#/$defs/digest"},
         "reason_code": {"enum": ["candidate_changed", "dependency_changed", "policy_changed", "requirements_changed", "scope_changed", "evaluator_changed", "environment_changed", "transient_execution_failure", "prior_evidence_corrupt"]},
-        "changes": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+        "changes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["field", "before", "after"],
+            "properties": {
+              "field": {"enum": ["candidate_digest", "dependency_digest", "policy_digest", "requirements_digest", "action_scope_digest", "evaluator_digest", "environment_digest", "prior_evidence_status"]},
+              "before": {"type": ["string", "null"]},
+              "after": {"type": ["string", "null"]}
+            },
+            "additionalProperties": false
+          }
+        },
         "evidence": {
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "required": ["kind", "digest"],
-            "properties": {"kind": {"type": "string"}, "digest": {"$ref": "#/$defs/digest"}},
+            "properties": {
+              "kind": {"enum": ["candidate_digest", "dependency_digest", "policy_digest", "requirements_digest", "action_scope_digest", "evaluator_digest", "environment_digest", "execution_trace_digest", "verifier_report_digest"]},
+              "digest": {"$ref": "#/$defs/digest"}
+            },
             "additionalProperties": false
           }
         },
         "issued_for_attempt_id": {"$ref": "#/$defs/opaqueId"},
-        "note": {"type": "string"}
+        "note": {"type": "string", "maxLength": 512}
       },
       "additionalProperties": false
     }
