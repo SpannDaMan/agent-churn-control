@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "candidate": "agent-churn-control 0.1.0",
-  "product_revision_sha256": "6d876ec71e328430b69d3c158a8f043836c7dbd19b3b9521341115d47d70e2f9",
+  "product_revision_sha256": "2adedba7538fe9e940f466e6656df3c36f3d5011f255a5dc2a46ac05efe57b34",
   "validated_on": "2026-08-23",
   "status": "pass",
   "checks": {
@@ -31,7 +31,8 @@
     "nested_schema_validation": "pass fan-out, metrics, invalidation, identity, and receipt fields are type checked",
     "cross_platform_revision_normalization": "pass LF and CRLF text produce identical revision bytes",
     "release_doctrine": "pass public doctrine review records product invariants, authority, claims, and gates",
-    "cross_platform_package_manifest": "pass canonical text hashes are line-ending invariant"
+    "cross_platform_package_manifest": "pass canonical text hashes are line-ending invariant",
+    "ci_action_runtime": "official Node 24 majors: actions/checkout v6 and actions/setup-python v6"
   },
   "package_payload_sha256": "a767b1feaa69b5720ca7f33b63a99a663132a2772727184da07fbe2053221a29",
   "store_copy": {"subtitle":"Stop duplicate agent work","score":96,"claim_boundary":"no demand, savings guarantee, causal model-regression, or endorsement claim"},
