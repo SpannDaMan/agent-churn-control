@@ -30,6 +30,12 @@ def test_public_tree_contains_no_private_markers() -> None:
     assert validator.validate_text_safety() == []
 
 
+def test_private_markers_are_scanned_in_nonstandard_text_files(tmp_path: Path, monkeypatch) -> None:
+    (tmp_path / ".env").write_text("SOURCE=c:" + "/users/private/operator\n", encoding="utf-8")
+    monkeypatch.setattr(validator, "ROOT", tmp_path)
+    assert any("private marker" in item for item in validator.validate_text_safety())
+
+
 def test_product_revision_normalizes_text_line_endings(tmp_path: Path) -> None:
     lf = tmp_path / "lf.md"
     crlf = tmp_path / "crlf.md"

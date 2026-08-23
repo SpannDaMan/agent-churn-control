@@ -45,6 +45,7 @@ REASON_CODES = {
     "promotion_evidence_incomplete", "promotion_identity_or_evidence_incomplete", "invalidation_already_consumed",
     "accepted_evidence_recorded", "equivalent_action_pending", "transient_retry_budget_exhausted",
     "accepted_evidence_without_matching_reservation",
+    "exact_event_already_reserved", "changed_work_requires_typed_invalidation", "invalidation_invalid",
     "typed invalidation is required", "invalidation reason_code is not allowed",
     "invalidation_id does not match canonical fingerprint",
     "invalidation does not identify the prior receipt",
@@ -67,6 +68,17 @@ EVENT_FIELDS = {
     "evidence_digest", "evidence_accepted", "evidence_outcome", "reservation_receipt_id",
     "material_progress", "promotion_requested", "promotion_evidence", "fanout", "invalidation",
     "rate_telemetry", "metrics",
+}
+INVALIDATION_REASON_FIELDS = {
+    "candidate_changed": "candidate_digest",
+    "dependency_changed": "dependency_digest",
+    "policy_changed": "policy_digest",
+    "requirements_changed": "requirements_digest",
+    "scope_changed": "action_scope_digest",
+    "evaluator_changed": "evaluator_digest",
+    "environment_changed": "environment_digest",
+    "transient_execution_failure": "prior_evidence_status",
+    "prior_evidence_corrupt": "prior_evidence_status",
 }
 
 
@@ -254,7 +266,27 @@ def invalidation_fingerprint(record: dict[str, Any]) -> str:
     return digest(payload)
 
 
-def validate_invalidation(record: Any, prior: dict[str, Any], consumed: set[str], policy: dict[str, Any]) -> list[str]:
+def identity_value(source: dict[str, Any], field: str, *, receipt: bool) -> Any:
+    if field == "action_scope_digest":
+        return source.get("action_key_scope_digest" if receipt else "action_scope_digest")
+    if field == "prior_evidence_status":
+        return source.get("outcome") if receipt else None
+    return source.get(field)
+
+
+def invalidation_target(record: Any, prior_receipts: list[dict[str, Any]]) -> dict[str, Any] | None:
+    if not isinstance(record, dict) or not isinstance(record.get("invalidates"), list) or len(record["invalidates"]) != 1:
+        return None
+    target_id = record["invalidates"][0]
+    return next((
+        row for row in reversed(prior_receipts)
+        if row.get("receipt_id") == target_id
+        and row.get("outcome") in {"pass", "reused", "local_failure"}
+        and row.get("evidence_accepted") is True
+    ), None)
+
+
+def validate_invalidation(record: Any, prior: dict[str, Any] | None, event: dict[str, Any], consumed: set[str], policy: dict[str, Any]) -> list[str]:
     if not isinstance(record, dict):
         return ["typed invalidation is required"]
     errors: list[str] = []
@@ -271,14 +303,16 @@ def validate_invalidation(record: Any, prior: dict[str, Any], consumed: set[str]
     invalidates = record.get("invalidates")
     changes = record.get("changes")
     evidence_rows = record.get("evidence")
-    if not isinstance(invalidates, list) or not invalidates or any(not valid_digest(item) for item in invalidates):
-        errors.append("invalidation invalidates must contain receipt digests")
+    if not isinstance(invalidates, list) or len(invalidates) != 1 or any(not valid_digest(item) for item in invalidates):
+        errors.append("invalidation invalidates must contain exactly one receipt digest")
     if not isinstance(changes, list) or not changes:
         errors.append("invalidation changes must be a non-empty list")
     if not isinstance(evidence_rows, list) or not evidence_rows:
         errors.append("invalidation evidence must be a non-empty list")
     if errors:
         return errors
+    if prior is None or prior.get("receipt_id") != invalidates[0]:
+        return ["invalidation does not identify the prior receipt"]
     if record.get("reason_code") not in policy["allowed_invalidation_reasons"]:
         errors.append("invalidation reason_code is not allowed")
     if not valid_opaque_id(record.get("issued_for_attempt_id"), nullable=True):
@@ -289,16 +323,38 @@ def validate_invalidation(record: Any, prior: dict[str, Any], consumed: set[str]
         errors.append("invalidation_id does not match canonical fingerprint")
     if record.get("invalidation_id") in consumed:
         errors.append("invalidation_already_consumed")
-    if prior.get("receipt_id") not in record.get("invalidates", []):
-        errors.append("invalidation does not identify the prior receipt")
     if record.get("action_scope_digest") != prior.get("action_key_scope_digest"):
         errors.append("invalidation action scope does not match prior receipt")
+    changed_fields: set[str] = set()
     for change in changes:
         if not isinstance(change, dict) or set(change) != {"field", "before", "after"} or change.get("field") not in policy["allowed_changed_fields"] or change.get("before") == change.get("after"):
             errors.append("invalidation changes contain an invalid field or unchanged value")
+            continue
+        field = change["field"]
+        changed_fields.add(field)
+        expected_before = identity_value(prior, field, receipt=True)
+        if field == "prior_evidence_status":
+            expected_after = "transient_execution_failure" if record.get("reason_code") == "transient_execution_failure" else "prior_evidence_corrupt"
+        else:
+            expected_after = identity_value(event, field, receipt=False)
+        if change.get("before") != expected_before or change.get("after") != expected_after:
+            errors.append("invalidation change does not match prior and current identity")
+    required_changed_field = INVALIDATION_REASON_FIELDS.get(record.get("reason_code"))
+    if required_changed_field is not None and required_changed_field not in changed_fields:
+        errors.append("invalidation reason_code does not match changed fields")
     for evidence in evidence_rows:
         if not isinstance(evidence, dict) or set(evidence) != {"kind", "digest"} or evidence.get("kind") not in policy["allowed_evidence_kinds"] or not valid_digest(evidence.get("digest")):
             errors.append("invalidation evidence is invalid")
+    required_evidence_kind = {
+        "transient_execution_failure": "execution_trace_digest",
+        "prior_evidence_corrupt": "verifier_report_digest",
+    }.get(record.get("reason_code"), required_changed_field)
+    if required_evidence_kind and not any(row.get("kind") == required_evidence_kind for row in evidence_rows if isinstance(row, dict)):
+        errors.append("invalidation evidence does not match reason_code")
+    if required_changed_field not in {None, "prior_evidence_status", "environment_digest"}:
+        current_value = identity_value(event, required_changed_field, receipt=False)
+        if valid_digest(current_value) and not any(row.get("kind") == required_changed_field and row.get("digest") == current_value for row in evidence_rows if isinstance(row, dict)):
+            errors.append("invalidation evidence does not bind the current identity")
     if record.get("reason_code") == "prior_evidence_corrupt" and not any(row.get("kind") == "verifier_report_digest" for row in evidence_rows if isinstance(row, dict)):
         errors.append("prior_evidence_corrupt requires verifier_report_digest")
     return errors
@@ -374,6 +430,18 @@ def build_receipt(event: dict[str, Any], prior_receipts: list[dict[str, Any]], p
         if receipt.get("event_id") == digest(event["event_id"]):
             if receipt.get("event_fingerprint") != requested_fingerprint:
                 raise ValueError("event_id_collision")
+            if receipt.get("decision") in {"allow", "allow_with_advisory", "allow_reexecution"} and receipt.get("outcome") == "pending":
+                replay = dict(receipt)
+                replay.update({
+                    "intervention_level": "enforce",
+                    "decision": "block_this_local_action",
+                    "reason_code": "exact_event_already_reserved",
+                    "evidence_digest": None,
+                    "reservation_receipt_id": None,
+                    "evidence_accepted": False,
+                })
+                replay["receipt_id"] = digest({field: value for field, value in replay.items() if field != "receipt_id"})
+                return replay
             return receipt
     key = work_key(event)
     fanout_errors = validate_fanout(event.get("fanout"))
@@ -390,6 +458,18 @@ def build_receipt(event: dict[str, Any], prior_receipts: list[dict[str, Any]], p
         and row.get("receipt_id") not in settled_reservations
     ), None)
     prior = next((row for row in reversed(work_history) if row.get("outcome") in {"pass", "reused", "local_failure"} and row.get("evidence_accepted") is True and valid_digest(row.get("evidence_digest"))), None)
+    related_changed_prior = next((
+        row for row in reversed(prior_receipts)
+        if key
+        and row.get("work_key") != key
+        and row.get("task_id") == digest(event["task_id"])
+        and row.get("action_kind") == event.get("action_kind")
+        and row.get("action_key_scope_digest") == event.get("action_scope_digest")
+        and row.get("outcome") in {"pass", "reused", "local_failure"}
+        and row.get("evidence_accepted") is True
+    ), None)
+    record = event.get("invalidation")
+    target_prior = invalidation_target(record, prior_receipts)
     consumed = {item for row in prior_receipts for item in row.get("consumed_invalidation_ids", [])}
     invalidation_id = None
     invalidation_reason_code = None
@@ -427,31 +507,33 @@ def build_receipt(event: dict[str, Any], prior_receipts: list[dict[str, Any]], p
             reservation_receipt_id = None
     elif pending is not None:
         level, decision, reason, outcome = "enforce", "block_this_local_action", "equivalent_action_pending", "pending"
-    elif prior is None and event.get("invalidation") is not None:
-        level, decision, reason, outcome = "enforce", "block_this_local_action", "invalidation does not identify the prior receipt", "blocked"
+    elif record is not None:
+        invalidation_errors = validate_invalidation(record, target_prior, event, consumed, policy)
+        if not invalidation_errors and record.get("reason_code") == "transient_execution_failure":
+            transient_count = sum(1 for row in prior_receipts if row.get("work_key") == key and row.get("invalidation_reason_code") == "transient_execution_failure")
+            if transient_count >= int(policy["max_transient_retries_per_work_key"]):
+                invalidation_errors.append("transient_retry_budget_exhausted")
+        if not invalidation_errors:
+            invalidation_id = record["invalidation_id"]
+            invalidation_reason_code = record["reason_code"]
+            consumed_now = [invalidation_id]
+            level, decision, reason, outcome = "observe", "allow_reexecution", "typed_invalidation_consumed", "pending"
+        else:
+            first_error = invalidation_errors[0]
+            reason = first_error if first_error in REASON_CODES or first_error.startswith("invalidation missing field:") else "invalidation_invalid"
+            level, decision, outcome = "enforce", "block_this_local_action", "blocked"
+    elif prior is None and related_changed_prior is not None:
+        level, decision, reason, outcome = "enforce", "block_this_local_action", "changed_work_requires_typed_invalidation", "blocked"
     elif prior is None:
         level, decision, reason, outcome = "bypass", "allow", "first_equivalent_action", "pending"
     elif prior.get("outcome") == "local_failure":
         level, decision, reason, outcome = "enforce", "local_fix_required", "deterministic_local_failure", "blocked"
     else:
-        record = event.get("invalidation")
-        if record is not None:
-            invalidation_errors = validate_invalidation(record, prior, consumed, policy)
-            if not invalidation_errors and record.get("reason_code") == "transient_execution_failure":
-                transient_count = sum(1 for row in prior_receipts if row.get("work_key") == key and row.get("invalidation_reason_code") == "transient_execution_failure")
-                if transient_count >= int(policy["max_transient_retries_per_work_key"]):
-                    invalidation_errors.append("transient_retry_budget_exhausted")
-            if not invalidation_errors:
-                invalidation_id = record["invalidation_id"]
-                invalidation_reason_code = record["reason_code"]
-                consumed_now = [invalidation_id]
-                level, decision, reason, outcome = "observe", "allow_reexecution", "typed_invalidation_consumed", "pending"
-            else:
-                level, decision, reason, outcome = "enforce", "block_this_local_action", invalidation_errors[0], "blocked"
-        else:
-            level, decision, reason, outcome = "enforce", "reuse_prior_evidence", "equivalent_passing_evidence_exists", "reused"
-            evidence_digest_value = prior.get("evidence_digest")
-            evidence_accepted_value = True
+        level, decision, reason, outcome = "enforce", "reuse_prior_evidence", "equivalent_passing_evidence_exists", "reused"
+        evidence_digest_value = prior.get("evidence_digest")
+        evidence_accepted_value = True
+    if decision != "evidence_accepted" and outcome != "local_failure":
+        reservation_receipt_id = None
     receipt: dict[str, Any] = {
         "schema_version": "1.0",
         "receipt_id": "",
@@ -636,6 +718,10 @@ def verify_receipt(receipt: dict[str, Any]) -> list[str]:
         basis = metric.get("basis_receipt_ids")
         if not isinstance(basis, list) or any(not valid_digest(item) for item in basis):
             errors.append("receipt metric basis_receipt_ids must contain only digests")
+        elif metric.get("status") == "derived" and not basis:
+            errors.append("derived receipt metric requires basis_receipt_ids")
+        elif any(token in str(metric.get("name", "")) for token in ("saved", "avoided", "cost_of_pass")) and metric.get("status") in {"measured", "derived"} and not basis:
+            errors.append("numeric savings receipt metric requires basis_receipt_ids")
     return errors
 
 
@@ -830,7 +916,7 @@ def run_self_test(corpus: Path = CORPUS_PATH) -> dict[str, Any]:
             record = {
                 "schema_version": "1.0", "invalidates": [prior[-1]["receipt_id"]],
                 "action_scope_digest": event["action_scope_digest"], "reason_code": "transient_execution_failure",
-                "changes": [{"field": "prior_evidence_status", "before": "pass", "after": "transient_failure"}],
+                "changes": [{"field": "prior_evidence_status", "before": prior[-1]["outcome"], "after": "transient_execution_failure"}],
                 "evidence": [{"kind": "execution_trace_digest", "digest": digest({"trace": case["id"]})}],
                 "issued_for_attempt_id": event["attempt_id"], "note": "fixture",
             }

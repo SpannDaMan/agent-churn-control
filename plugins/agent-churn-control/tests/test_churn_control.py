@@ -58,7 +58,7 @@ def transient_invalidation(prior: dict, seed: str) -> dict:
         "invalidates": [prior["receipt_id"]],
         "action_scope_digest": prior["action_key_scope_digest"],
         "reason_code": "transient_execution_failure",
-        "changes": [{"field": "prior_evidence_status", "before": "pass", "after": f"transient-{seed}"}],
+        "changes": [{"field": "prior_evidence_status", "before": prior["outcome"], "after": "transient_execution_failure"}],
         "evidence": [{"kind": "execution_trace_digest", "digest": core.digest({"trace": seed})}],
     }
     value["invalidation_id"] = core.invalidation_fingerprint(value)
@@ -112,7 +112,10 @@ def test_attempt_id_does_not_make_equivalent_work_new() -> None:
 def test_replay_is_idempotent() -> None:
     first = core.build_receipt(event(), [], POLICY)
     replay = core.build_receipt(event(), [first], POLICY)
-    assert replay == first
+    assert replay["decision"] == "block_this_local_action"
+    assert replay["reason_code"] == "exact_event_already_reserved"
+    assert replay["event_id"] == first["event_id"]
+    assert core.verify_receipt(replay) == []
 
 
 def test_evidence_is_reusable_only_after_linked_acceptance() -> None:
@@ -325,6 +328,24 @@ def test_state_decision_is_atomic_across_concurrent_processes() -> None:
         assert len(core.load_receipts(state)) == 3
 
 
+def test_identical_concurrent_event_id_has_one_executor() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        state = root / "receipts.ndjson"
+        event_path = root / "event.json"
+        event_path.write_text(json.dumps(event()), encoding="utf-8")
+        processes = [
+            subprocess.Popen([sys.executable, "-B", str(MODULE_PATH), "decide", "--event", str(event_path), "--state", str(state)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            for _ in range(3)
+        ]
+        outputs = [process.communicate(timeout=30) for process in processes]
+        assert all(process.returncode == 0 for process in processes)
+        decisions = [json.loads(stdout)["receipt"]["decision"] for stdout, _ in outputs]
+        assert decisions.count("allow") == 1
+        assert decisions.count("block_this_local_action") == 2
+        assert len(core.load_receipts(state)) == 1
+
+
 def test_malformed_invalidation_collections_are_rejected_without_crashing() -> None:
     history = accepted_chain()
     value = event()
@@ -340,7 +361,58 @@ def test_malformed_invalidation_collections_are_rejected_without_crashing() -> N
     }
     receipt = core.build_receipt(value, history, POLICY)
     assert receipt["decision"] == "block_this_local_action"
-    assert receipt["reason_code"] == "invalidation invalidates must contain receipt digests"
+    assert receipt["reason_code"] == "invalidation_invalid"
+    assert core.verify_receipt(receipt) == []
+
+
+def test_changed_candidate_invalidation_binds_across_work_keys() -> None:
+    history = accepted_chain()
+    changed = event()
+    changed["event_id"] = "event-candidate-v2"
+    changed["candidate_digest"] = core.digest({"candidate": "v2"})
+    record = {
+        "schema_version": "1.0",
+        "invalidates": [history[-1]["receipt_id"]],
+        "action_scope_digest": history[-1]["action_key_scope_digest"],
+        "reason_code": "candidate_changed",
+        "changes": [{"field": "candidate_digest", "before": history[-1]["candidate_digest"], "after": changed["candidate_digest"]}],
+        "evidence": [{"kind": "candidate_digest", "digest": changed["candidate_digest"]}],
+    }
+    record["invalidation_id"] = core.invalidation_fingerprint(record)
+    changed["invalidation"] = record
+    receipt = core.build_receipt(changed, history, POLICY)
+    assert receipt["work_key"] != history[-1]["work_key"]
+    assert receipt["decision"] == "allow_reexecution"
+    assert core.verify_receipt(receipt) == []
+
+
+def test_changed_candidate_requires_typed_invalidation() -> None:
+    history = accepted_chain()
+    changed = event()
+    changed["event_id"] = "event-candidate-v2-untyped"
+    changed["candidate_digest"] = core.digest({"candidate": "v2"})
+    receipt = core.build_receipt(changed, history, POLICY)
+    assert receipt["decision"] == "block_this_local_action"
+    assert receipt["reason_code"] == "changed_work_requires_typed_invalidation"
+
+
+def test_fabricated_invalidation_delta_is_rejected() -> None:
+    history = accepted_chain()
+    value = event()
+    value["event_id"] = "event-fabricated-delta"
+    record = {
+        "schema_version": "1.0",
+        "invalidates": [history[-1]["receipt_id"]],
+        "action_scope_digest": history[-1]["action_key_scope_digest"],
+        "reason_code": "candidate_changed",
+        "changes": [{"field": "candidate_digest", "before": core.digest("invented-before"), "after": core.digest("invented-after")}],
+        "evidence": [{"kind": "candidate_digest", "digest": core.digest("invented-after")}],
+    }
+    record["invalidation_id"] = core.invalidation_fingerprint(record)
+    value["invalidation"] = record
+    receipt = core.build_receipt(value, history, POLICY)
+    assert receipt["decision"] == "block_this_local_action"
+    assert receipt["reason_code"] == "invalidation_invalid"
 
 
 def test_transient_retry_budget_is_per_work_key() -> None:
@@ -400,6 +472,27 @@ def test_receipt_verifier_enforces_complete_nested_schema() -> None:
     metric["metrics"] = [{"name": "input_tokens", "status": "measured", "value": "10", "unit": "tokens", "source_ref": None, "basis_receipt_ids": []}]
     reseal(metric)
     assert any("finite numeric" in item for item in core.verify_receipt(metric))
+
+    derived = dict(receipt)
+    derived["metrics"] = [{"name": "avoided_work_units", "status": "derived", "value": 1, "unit": "work_units", "source_ref": None, "basis_receipt_ids": []}]
+    reseal(derived)
+    assert any("requires basis_receipt_ids" in item for item in core.verify_receipt(derived))
+
+
+def test_rejected_acceptance_shapes_still_emit_valid_receipts() -> None:
+    history = accepted_chain()
+    malformed = event()
+    malformed.update({
+        "event_id": "malformed-acceptance",
+        "evidence_accepted": True,
+        "evidence_digest": core.digest("evidence"),
+        "reservation_receipt_id": history[0]["receipt_id"],
+        "fanout": {"declared": True},
+    })
+    receipt = core.build_receipt(malformed, history, POLICY)
+    assert receipt["decision"] == "block_this_local_action"
+    assert receipt["reservation_receipt_id"] is None
+    assert core.verify_receipt(receipt) == []
 
 
 def test_package_verification_normalizes_text_line_endings(tmp_path: Path) -> None:

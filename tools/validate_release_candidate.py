@@ -76,6 +76,8 @@ SECRET_PATTERNS = (
     re.compile(r"\bgh[opsu]_[A-Za-z0-9]{20,}"),
     re.compile(r"\bsk-[A-Za-z0-9_-]{20,}"),
     re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{20,}"),
+    re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
+    re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
 )
 
 
@@ -139,21 +141,27 @@ def validate_file_shape() -> list[str]:
 def validate_text_safety() -> list[str]:
     errors: list[str] = []
     for path in ROOT.rglob("*"):
-        if not path.is_file() or (path.suffix.lower() not in TEXT_SUFFIXES and path.name != "LICENSE"):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(ROOT)
+        if any(part in GENERATED_PARTS for part in relative.parts):
             continue
         try:
-            text = path.read_text(encoding="utf-8-sig")
-        except UnicodeDecodeError:
+            raw = path.read_bytes()
+            if b"\0" in raw:
+                continue
+            text = raw.decode("utf-8-sig")
+        except (OSError, UnicodeDecodeError):
             continue
         lower = text.lower()
         for marker in PRIVATE_MARKERS:
             if marker in lower:
-                errors.append(f"private marker {marker!r}: {path.relative_to(ROOT)}")
+                errors.append(f"private marker {marker!r}: {relative}")
         for pattern in SECRET_PATTERNS:
             if pattern.search(text):
-                errors.append(f"secret-like value: {path.relative_to(ROOT)}")
+                errors.append(f"secret-like value: {relative}")
         if ("[" + "todo") in lower:
-            errors.append(f"TODO placeholder: {path.relative_to(ROOT)}")
+            errors.append(f"TODO placeholder: {relative}")
     return errors
 
 
@@ -172,6 +180,9 @@ def validate_metadata() -> list[str]:
     manifest = load_json(PLUGIN / ".codex-plugin" / "plugin.json")
     submission = load_json(ROOT / "submission" / "openai-plugin-submission.json")
     marketplace = load_json(ROOT / ".agents" / "plugins" / "marketplace.json")
+    policy = load_json(PLUGIN / "assets" / "core-policy.json")
+    contract = load_json(PLUGIN / "assets" / "contract.schema.json")
+    skill_text = (PLUGIN / "skills" / "agent-churn-control" / "SKILL.md").read_text(encoding="utf-8-sig")
     expected = {
         "name": "agent-churn-control", "version": "0.1.0", "license": "MIT",
         "homepage": "https://github.com/SpannDaMan/agent-churn-control",
@@ -206,6 +217,13 @@ def validate_metadata() -> list[str]:
         errors.append("submission prompts drifted")
     if submission.get("publisher") != "Orbral" or submission.get("submission_type") != "skills_only":
         errors.append("submission publisher or type mismatch")
+    if '"<PLUGIN_ROOT>/scripts/churn_control.py"' not in skill_text or "never resolve plugin files from the user's project working directory" not in skill_text:
+        errors.append("skill installed-root command routing is missing")
+    metric_properties = contract.get("properties", {}).get("metrics", {}).get("items", {}).get("properties", {})
+    if set(metric_properties.get("name", {}).get("enum", [])) != set(policy.get("allowed_metric_names", [])):
+        errors.append("contract metric names drifted from runtime policy")
+    if set(metric_properties.get("unit", {}).get("enum", [])) != set(policy.get("allowed_metric_units", [])):
+        errors.append("contract metric units drifted from runtime policy")
     if marketplace.get("name") != "agent-churn-control" or len(marketplace.get("plugins", [])) != 1:
         errors.append("marketplace root mismatch")
     else:

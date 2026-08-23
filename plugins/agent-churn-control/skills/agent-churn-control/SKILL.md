@@ -11,10 +11,11 @@ Keep material progress separate from churn. Material output can prove progress; 
 
 ## Quick Start
 
-1. Create an event from `assets/sample-event.json`.
-2. Run `python scripts/churn_control.py decide --event <event.json> --state .agent-churn-control/receipts.ndjson --output <reservation.json>`.
-3. After the action actually completes, run `python scripts/churn_control.py accept --event <event.json> --reservation <reservation.json> --evidence-digest <sha256:digest> --state .agent-churn-control/receipts.ndjson --output <accepted.json>`.
-4. Run `python scripts/churn_control.py verify --receipt <accepted.json>` for a saved receipt, `python scripts/churn_control.py verify-package` for package integrity, or `python scripts/churn_control.py self-test` for the versioned fixture corpus.
+1. Resolve `PLUGIN_ROOT` from this loaded `SKILL.md`: it is the directory two levels above the skill directory (`skills/agent-churn-control/../..`). Use that exact absolute path; never resolve plugin files from the user's project working directory.
+2. Create an event from `<PLUGIN_ROOT>/assets/sample-event.json`.
+3. Run `python "<PLUGIN_ROOT>/scripts/churn_control.py" decide --event <event.json> --state .agent-churn-control/receipts.ndjson --output <reservation.json>`.
+4. After the action actually completes, run `python "<PLUGIN_ROOT>/scripts/churn_control.py" accept --event <event.json> --reservation <reservation.json> --evidence-digest <sha256:digest> --state .agent-churn-control/receipts.ndjson --output <accepted.json>`.
+5. Run `python "<PLUGIN_ROOT>/scripts/churn_control.py" verify --receipt <accepted.json>` for a saved receipt, `python "<PLUGIN_ROOT>/scripts/churn_control.py" verify-package` for package integrity, or `python "<PLUGIN_ROOT>/scripts/churn_control.py" self-test` for the versioned fixture corpus.
 
 An `allow` decision is a pending reservation, never proof that the action passed. Only the `accept` transition can attach an evidence digest and make the result reusable. The state path is serialized with a zero-dependency cross-process lock and re-read before append. Concurrent callers sharing the same state file therefore cannot both claim the first equivalent action.
 

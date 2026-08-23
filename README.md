@@ -81,7 +81,7 @@ The first complete solo action returns `bypass` with `outcome: pending`. Only a 
 
 - Work identity binds action scope, requirements, candidate, dependencies, policy, evaluator, and environment.
 - An allow decision is only a pending reservation; it cannot be reused until accepted evidence is linked back to that receipt.
-- Changed work requires a typed, single-use invalidation bound to the prior receipt and action scope.
+- Carrying a prior result forward after an identity change requires a typed, single-use invalidation bound to the prior receipt, actual before/after values, and action scope.
 - External identifiers are retained only as SHA-256 digests.
 - Receipts reject prompts, outputs, commands, logs, file contents, secrets, credentials, participant identities, and absolute paths.
 - Unknown usage or cost stays unknown. Numeric savings require comparable authoritative basis receipts.

@@ -9,7 +9,7 @@ Agent Churn Control v0.1.0 is approved as a narrow, local, skills-only duplicate
 - Progress and churn remain separate facts.
 - Complete first local actions may run without added planning ceremony.
 - Equivalent accepted evidence should be reused.
-- Changed work requires typed, prior-bound, single-use invalidation.
+- Carrying a prior result forward across changed work requires typed, identity-bound, single-use invalidation.
 - Rate-limit state is advisory and never grants whole-task stop authority.
 - Enforcement applies only to the named local action.
 - Receipts remain content-free and retain external identifiers only as digests.

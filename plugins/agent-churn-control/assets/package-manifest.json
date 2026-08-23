@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "release_state": "public_release_candidate",
   "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
-  "package_payload_sha256": "a767b1feaa69b5720ca7f33b63a99a663132a2772727184da07fbe2053221a29",
+  "package_payload_sha256": "64d035ba41db70a80382ad45e5f121c7562dd28129f84085c57dae10e00b711e",
   "files": [
     {
       "path": ".codex-plugin/plugin.json",
@@ -33,8 +33,8 @@
     },
     {
       "path": "assets/contract.schema.json",
-      "sha256": "72a80e759151e1a95a47ce24b6ef2ddc6bd6d851e5ab80d01387515f09bc16b2",
-      "bytes": 6283
+      "sha256": "5648d25dcd9a5ae1c555e2c1473a076e74ae008f28507bdc145c747ccd35d85f",
+      "bytes": 6313
     },
     {
       "path": "assets/core-policy.json",
@@ -83,13 +83,13 @@
     },
     {
       "path": "scripts/churn_control.py",
-      "sha256": "f8bf491c2ce0f872a91cb49c52e69aebb27c1c7d0b6e1b80f3b4a215dfeb148c",
-      "bytes": 52986
+      "sha256": "20298753bd9874a8abd8fac3c0bf24ec39ef8a549bc2eab16ef99b4180079753",
+      "bytes": 58123
     },
     {
       "path": "skills/agent-churn-control/SKILL.md",
-      "sha256": "4ca6926fa6175e52f0e0f6722aa7642faa8f2642d71ac72121b77a84681272fc",
-      "bytes": 4769
+      "sha256": "309326ef58f8cef0adf3d59e5e58370352854797d1f97e50643af73ad4955bb9",
+      "bytes": 5112
     },
     {
       "path": "skills/agent-churn-control/agents/openai.yaml",
@@ -98,8 +98,8 @@
     },
     {
       "path": "tests/test_churn_control.py",
-      "sha256": "e49c0bb5a766a96544f12ca55cfcdb246479bd57b2e2177ef3974d4e3687fbc6",
-      "bytes": 19563
+      "sha256": "b0abba0b45b686aa465b980b5b08da98c299eb69d8a7aef47d1258cabd6e556a",
+      "bytes": 23991
     }
   ],
   "authority_map_path": "assets/authority-map.json",

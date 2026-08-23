@@ -12,7 +12,7 @@ Provide either an `environment_digest` or `environment_independent: true`. Omitt
 - `allow_with_advisory`: identity is incomplete.
 - `evidence_accepted`: the action completed and accepted evidence was linked to its pending reservation.
 - `reuse_prior_evidence`: accepted equivalent evidence already exists.
-- `allow_reexecution`: a valid typed invalidation authorizes one changed-work pass.
+- `allow_reexecution`: a typed invalidation bound to the prior receipt and actual identity delta authorizes one changed-work pass.
 - `local_fix_required`: a deterministic local failure needs repair before retry.
 - `block_this_local_action`: the named action is malformed or lacks valid invalidation.
 - `promotion_ready` or `promotion_not_ready`: frozen-candidate evidence is complete or incomplete.

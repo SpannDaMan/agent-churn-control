@@ -66,10 +66,10 @@
         "type": "object",
         "required": ["name", "status", "value", "unit", "source_ref", "basis_receipt_ids"],
         "properties": {
-          "name": {"enum": ["input_tokens", "output_tokens", "requests", "latency_ms", "cost_of_pass", "prevented_duplicate_executions"]},
+          "name": {"enum": ["input_tokens", "output_tokens", "cached_input_tokens", "elapsed_ms", "retry_count", "tool_calls", "cost_of_pass", "avoided_work_units"]},
           "status": {"enum": ["measured", "derived", "unknown", "stale"]},
           "value": {"type": ["number", "null"]},
-          "unit": {"enum": ["tokens", "requests", "milliseconds", "usd", "count"]},
+          "unit": {"enum": ["tokens", "milliseconds", "count", "usd", "work_units"]},
           "source_ref": {"oneOf": [{"$ref": "#/$defs/opaqueId"}, {"type": "null"}]},
           "basis_receipt_ids": {"type": "array", "items": {"$ref": "#/$defs/digest"}}
         },
