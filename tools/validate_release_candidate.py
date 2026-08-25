@@ -25,8 +25,8 @@ EXPECTED_SUBTITLE = "Stop duplicate agent work"
 EXPECTED_LONG = "Use this before repeating an agent test, review, retry, tool call, or promotion check. Anti-Churn compares the proposed local action with accepted evidence, reuses matching results, permits changed work through typed invalidation, and shows what may be skipped versus what still must run. Do not use rate-limit percentage as stop authority; it gates only the duplicate action and never stops the task, publishes, or changes permissions."
 EXPECTED_PROMPTS = [
     "Steer: Audit this long build for scope drift and duplicate work. Reuse valid evidence, keep us on task, and stop token burn.",
-    "@Anti-Churn Before another full test cycle, show what must run, what is covered, and what would duplicate prior evidence.",
-    "@Anti-Churn The candidate changed after review. Show what evidence is invalid, what remains valid, and what must be rerun.",
+    "Before another full test cycle, show what must run, what is covered, and what would duplicate prior evidence.",
+    "The candidate changed after review. Show what evidence is invalid, what remains valid, and what must be rerun.",
 ]
 
 REQUIRED_FILES = (
@@ -189,7 +189,7 @@ def validate_metadata() -> list[str]:
     measurement = load_json(PLUGIN / "assets" / "sample-efficiency-measurement.json")
     skill_text = (PLUGIN / "skills" / "agent-churn-control" / "SKILL.md").read_text(encoding="utf-8-sig")
     expected = {
-        "name": "agent-churn-control", "version": "0.1.3", "license": "MIT",
+        "name": "agent-churn-control", "version": "0.1.4", "license": "MIT",
         "homepage": "https://github.com/SpannDaMan/agent-churn-control",
         "repository": "https://github.com/SpannDaMan/agent-churn-control",
     }
@@ -259,9 +259,9 @@ def validate_metadata() -> list[str]:
         errors.append("Claude marketplace root mismatch")
     else:
         claude_entry = claude_entries[0]
-        if claude_entry.get("name") != "anti-churn" or claude_entry.get("source") != "./plugins/agent-churn-control" or claude_entry.get("version") != "0.1.3":
+        if claude_entry.get("name") != "anti-churn" or claude_entry.get("source") != "./plugins/agent-churn-control" or claude_entry.get("version") != "0.1.4":
             errors.append("Claude marketplace plugin entry mismatch")
-    if claude_plugin.get("name") != "anti-churn" or claude_plugin.get("version") != "0.1.3" or claude_plugin.get("author", {}).get("name") != "Orbral":
+    if claude_plugin.get("name") != "anti-churn" or claude_plugin.get("version") != "0.1.4" or claude_plugin.get("author", {}).get("name") != "Orbral":
         errors.append("Claude plugin identity mismatch")
     return errors
 
@@ -365,7 +365,7 @@ def run_validation() -> dict[str, Any]:
     errors = sorted({error for group in checks.values() for error in group})
     return {
         "status": "pass" if not errors else "fail",
-        "candidate": "agent-churn-control 0.1.3",
+        "candidate": "agent-churn-control 0.1.4",
         "product_revision_sha256": product_revision(),
         "checks": {name: "pass" if not group else "fail" for name, group in checks.items()},
         "errors": errors,

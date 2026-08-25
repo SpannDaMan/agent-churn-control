@@ -2,7 +2,7 @@
 
 ## Decision
 
-Anti-Churn v0.1.3 is approved as a narrow, local, skills-only duplicate-work control.
+Anti-Churn v0.1.4 is approved as a narrow, local, skills-only duplicate-work control.
 
 ## Invariants
 
@@ -29,4 +29,4 @@ The release requires versioned fixtures, unit tests, package integrity, public-t
 
 ## Disposition
 
-Pass for v0.1.3 when the candidate-bound release receipt and hosted promotion gates are complete.
+Pass for v0.1.4 when the candidate-bound release receipt and hosted promotion gates are complete.
