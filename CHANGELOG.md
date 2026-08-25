@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3 - 2026-08-24
+
+- Tightened all three approved anti-churn examples to 128 characters or fewer for OpenAI's store limit.
+- Preserved the long-build steer, duplicate-cycle audit, and changed-candidate evidence reuse flows.
+- Kept the locked full-bleed Silver Satin marketplace identity unchanged.
+
 ## 0.1.2 - 2026-08-24
 
 - Added the operator-approved long-build steer, full-cycle reuse, and changed-candidate invalidation prompts in the approved order.
