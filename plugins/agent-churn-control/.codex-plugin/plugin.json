@@ -1,6 +1,6 @@
 {
   "name": "agent-churn-control",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Use before repeating an agent action to reuse matching evidence, allow valid changed work, and gate only the duplicate local action.",
   "author": {
     "name": "Orbral",
@@ -22,9 +22,9 @@
     "privacyPolicyURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
     "defaultPrompt": [
-      "Before rerunning this test suite, check whether accepted evidence already covers the same candidate and requirements.",
-      "This candidate changed. Tell me which checks are actually invalidated and which results I can reuse.",
-      "Audit this long agent task for repeated tests, reviews, retries, polling, and duplicate status updates."
+      "Steer: We’ve been working on this build for a long time and the task is starting to sprawl. Audit the work so far against the original goal, identify repeated tests, reviews, retries, polling, or status updates, and tell me what evidence we can reuse. Keep the task moving, but stop us from burning tokens on duplicate work.",
+      "Before we run another full test and review cycle, check whether the current candidate and requirements are already covered. Show what must still run and what would be duplicate work.",
+      "This candidate changed after the last review. Compare the changed files and requirements with the accepted evidence, tell me which checks were actually invalidated, and reuse everything that still applies."
     ],
     "brandColor": "#0A6CFF",
     "composerIcon": "./assets/icon.png",

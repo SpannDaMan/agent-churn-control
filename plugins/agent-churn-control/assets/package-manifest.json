@@ -1,20 +1,25 @@
 {
   "schema_version": "1.0",
   "plugin_id": "agent-churn-control",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "release_state": "public_release_candidate",
   "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
-  "package_payload_sha256": "980be03dfbf38a59176048829683dc0024b07e5403f1fb8b301794ca4c3c3f77",
+  "package_payload_sha256": "822579a05a76c2f7f92350852c59f71bddb4adcd20de9ab2a3d46dfa539bcae2",
   "files": [
     {
       "path": ".claude-plugin/plugin.json",
-      "sha256": "e2d0b02c8e5d1a861a6df653b80d33e776a0e52ed1b5188beacc2885ff8a7cf5",
+      "sha256": "2eb7735a30f02ecf22d540b860e1cbe0a68f4eab697462bf733a213de78aa81c",
       "bytes": 556
     },
     {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "501f0720042ca2e537d0047aa80a7dec968fae8fa1ae6cddbe43f05217138807",
-      "bytes": 2213
+      "sha256": "20e94eff082e18e11ad95572a758d1e70c290c70634db19f62bd6f3b15a27052",
+      "bytes": 2606
+    },
+    {
+      "path": "assets/Agent Churn Control Transparent Raster Master 230826.png",
+      "sha256": "3cff5c3bc1e6f479dd266e136131245d84c960df126b6433f5dc3c333045e5ee",
+      "bytes": 198774
     },
     {
       "path": "assets/Agent Churn Control Vector Dark 230826.svg",
@@ -27,9 +32,19 @@
       "bytes": 1267
     },
     {
+      "path": "assets/Anti-Churn Silver Satin Master 240826.png",
+      "sha256": "3e89588ddd77c975148a6ee69dea3f831ee45eaf342fe2829fce7c60cd4dcf8c",
+      "bytes": 1133815
+    },
+    {
       "path": "assets/Logo Generation Manifest 230826.json",
-      "sha256": "e20e799ec62ecaad305039c7f6511fa37dd15ba68e1d89a841715e4c1d2691b0",
-      "bytes": 1482
+      "sha256": "bb62980901ea402eec5934a1c2206445896604f489dcba57708e7db671c2db4f",
+      "bytes": 2408
+    },
+    {
+      "path": "assets/Silver Satin Background Master 240826.png",
+      "sha256": "5ef688ba56bd8e8b185903df3a73262400859f0bb0791009b437f5d13ff8a579",
+      "bytes": 1852661
     },
     {
       "path": "assets/authority-map.json",
@@ -48,18 +63,18 @@
     },
     {
       "path": "assets/icon.png",
-      "sha256": "79aa388e79aa7ab9a0fa074843934d0f81089207c60c37fcb331d98f924f1ba0",
-      "bytes": 56336
+      "sha256": "b239b7fefdde72767f43cc1776e4106cfd0c159a455e683e180db47aa3f1835f",
+      "bytes": 321000
     },
     {
       "path": "assets/logo-dark.png",
-      "sha256": "ab9334eb5a93380ae5bf5de72ad15614ae902cc86ca1ab84fcf328b990e6e2b2",
-      "bytes": 146497
+      "sha256": "3e89588ddd77c975148a6ee69dea3f831ee45eaf342fe2829fce7c60cd4dcf8c",
+      "bytes": 1133815
     },
     {
       "path": "assets/logo.png",
-      "sha256": "3cff5c3bc1e6f479dd266e136131245d84c960df126b6433f5dc3c333045e5ee",
-      "bytes": 198774
+      "sha256": "3e89588ddd77c975148a6ee69dea3f831ee45eaf342fe2829fce7c60cd4dcf8c",
+      "bytes": 1133815
     },
     {
       "path": "assets/sample-efficiency-measurement.json",
@@ -88,7 +103,7 @@
     },
     {
       "path": "scripts/churn_control.py",
-      "sha256": "9f603233828a04bd6b4fbb4e4413b705fabe8235e22e7ca642e883986c76df78",
+      "sha256": "b9bb3c10fb0a1bd5ba641e1a3dd0e68740b14871914daf93ac6d25d679e540d2",
       "bytes": 66558
     },
     {

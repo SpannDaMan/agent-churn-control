@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 - 2026-08-24
+
+- Added the operator-approved long-build steer, full-cycle reuse, and changed-candidate invalidation prompts in the approved order.
+- Promoted the exact Anti-Churn mark over the locked full-bleed Silver Satin marketplace background.
+- Preserved typed invalidation, advisory rate telemetry, content-free receipts, and local-action-only authority.
+
 ## 0.1.1 - 2026-08-23
 
 - Renamed the public product to Anti-Churn while preserving the stable `agent-churn-control` package slug.

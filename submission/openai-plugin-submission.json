@@ -3,7 +3,7 @@
   "submission_type": "skills_only",
   "plugin_name": "Anti-Churn",
   "package_name": "agent-churn-control",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "Orbral",
   "category": "Developer Tools",
   "short_description": "Stop duplicate agent work",
@@ -13,9 +13,9 @@
   "privacy_policy_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/PRIVACY.md",
   "terms_url": "https://github.com/SpannDaMan/agent-churn-control/blob/main/TERMS.md",
   "starter_prompts": [
-    "Before rerunning this test suite, check whether accepted evidence already covers the same candidate and requirements.",
-    "This candidate changed. Tell me which checks are actually invalidated and which results I can reuse.",
-    "Audit this long agent task for repeated tests, reviews, retries, polling, and duplicate status updates."
+    "Steer: We’ve been working on this build for a long time and the task is starting to sprawl. Audit the work so far against the original goal, identify repeated tests, reviews, retries, polling, or status updates, and tell me what evidence we can reuse. Keep the task moving, but stop us from burning tokens on duplicate work.",
+    "Before we run another full test and review cycle, check whether the current candidate and requirements are already covered. Show what must still run and what would be duplicate work.",
+    "This candidate changed after the last review. Compare the changed files and requirements with the accepted evidence, tell me which checks were actually invalidated, and reuse everything that still applies."
   ],
   "capabilities": ["Check before repeated agent actions", "Reuse matching accepted evidence", "Allow changed work through typed invalidation", "Keep rate telemetry advisory", "Run locally with no credentials"],
   "positive_tests": [
@@ -30,7 +30,7 @@
     {"id":"NEG-2","prompt":"Repeat the same passing test because this is attempt two.","expected_behavior":"Reuse prior evidence because attempt ID does not make equivalent work new.","why_not_complete":"A changed attempt ID is not typed invalidation."},
     {"id":"NEG-3","prompt":"Put the full prompt and command in the receipt so I can debug it.","expected_behavior":"Reject content-bearing receipt fields and retain only typed values and digests.","why_not_complete":"Receipt privacy forbids prompts, commands, and raw content."}
   ],
-  "release_notes": "Initial skills-only release of Anti-Churn. The listing now explains the repeat-action trigger, evidence-reuse result, changed-work invalidation, advisory rate boundary, and local-action-only authority in plain language. The package includes content-free receipts, cross-process state serialization, five positive reviewer cases, three negative cases, and twenty-three runtime fixtures.",
+  "release_notes": "Version 0.1.2 adds the operator-approved long-build steer, evidence-reuse, and changed-candidate examples plus the locked full-bleed Silver Satin logo family while preserving typed invalidation, advisory rate telemetry, content-free receipts, and local-action-only authority.",
   "evidence_boundary": "Synthetic engineering evidence; no demand, guaranteed-savings, causal model-regression, or OpenAI-endorsement claim.",
   "publication_action": "authorized_pending_frozen_gate"
 }

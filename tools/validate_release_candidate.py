@@ -24,9 +24,9 @@ CORE = PLUGIN / "scripts" / "churn_control.py"
 EXPECTED_SUBTITLE = "Stop duplicate agent work"
 EXPECTED_LONG = "Use this before repeating an agent test, review, retry, tool call, or promotion check. Anti-Churn compares the proposed local action with accepted evidence, reuses matching results, permits changed work through typed invalidation, and shows what may be skipped versus what still must run. Do not use rate-limit percentage as stop authority; it gates only the duplicate action and never stops the task, publishes, or changes permissions."
 EXPECTED_PROMPTS = [
-    "Before rerunning this test suite, check whether accepted evidence already covers the same candidate and requirements.",
-    "This candidate changed. Tell me which checks are actually invalidated and which results I can reuse.",
-    "Audit this long agent task for repeated tests, reviews, retries, polling, and duplicate status updates.",
+    "Steer: We’ve been working on this build for a long time and the task is starting to sprawl. Audit the work so far against the original goal, identify repeated tests, reviews, retries, polling, or status updates, and tell me what evidence we can reuse. Keep the task moving, but stop us from burning tokens on duplicate work.",
+    "Before we run another full test and review cycle, check whether the current candidate and requirements are already covered. Show what must still run and what would be duplicate work.",
+    "This candidate changed after the last review. Compare the changed files and requirements with the accepted evidence, tell me which checks were actually invalidated, and reuse everything that still applies.",
 ]
 
 REQUIRED_FILES = (
@@ -56,6 +56,9 @@ REQUIRED_FILES = (
     "plugins/agent-churn-control/assets/sample-efficiency-measurement.json",
     "plugins/agent-churn-control/assets/Agent Churn Control Vector Master 230826.svg",
     "plugins/agent-churn-control/assets/Agent Churn Control Vector Dark 230826.svg",
+    "plugins/agent-churn-control/assets/Agent Churn Control Transparent Raster Master 230826.png",
+    "plugins/agent-churn-control/assets/Anti-Churn Silver Satin Master 240826.png",
+    "plugins/agent-churn-control/assets/Silver Satin Background Master 240826.png",
     "plugins/agent-churn-control/assets/Logo Generation Manifest 230826.json",
     "plugins/agent-churn-control/assets/icon.png",
     "plugins/agent-churn-control/assets/logo.png",
@@ -186,7 +189,7 @@ def validate_metadata() -> list[str]:
     measurement = load_json(PLUGIN / "assets" / "sample-efficiency-measurement.json")
     skill_text = (PLUGIN / "skills" / "agent-churn-control" / "SKILL.md").read_text(encoding="utf-8-sig")
     expected = {
-        "name": "agent-churn-control", "version": "0.1.1", "license": "MIT",
+        "name": "agent-churn-control", "version": "0.1.2", "license": "MIT",
         "homepage": "https://github.com/SpannDaMan/agent-churn-control",
         "repository": "https://github.com/SpannDaMan/agent-churn-control",
     }
@@ -256,9 +259,9 @@ def validate_metadata() -> list[str]:
         errors.append("Claude marketplace root mismatch")
     else:
         claude_entry = claude_entries[0]
-        if claude_entry.get("name") != "anti-churn" or claude_entry.get("source") != "./plugins/agent-churn-control" or claude_entry.get("version") != "0.1.1":
+        if claude_entry.get("name") != "anti-churn" or claude_entry.get("source") != "./plugins/agent-churn-control" or claude_entry.get("version") != "0.1.2":
             errors.append("Claude marketplace plugin entry mismatch")
-    if claude_plugin.get("name") != "anti-churn" or claude_plugin.get("version") != "0.1.1" or claude_plugin.get("author", {}).get("name") != "Orbral":
+    if claude_plugin.get("name") != "anti-churn" or claude_plugin.get("version") != "0.1.2" or claude_plugin.get("author", {}).get("name") != "Orbral":
         errors.append("Claude plugin identity mismatch")
     return errors
 
@@ -303,8 +306,8 @@ def validate_activation_suite() -> list[str]:
 def validate_assets() -> list[str]:
     errors: list[str] = []
     expected = {
-        "icon.png": (512, 512, True), "logo.png": (1024, 1024, True),
-        "logo-dark.png": (1024, 1024, True), "screenshot1.png": (1600, 1000, False),
+        "icon.png": (512, 512, False), "logo.png": (1024, 1024, False),
+        "logo-dark.png": (1024, 1024, False), "screenshot1.png": (1600, 1000, False),
     }
     for name, (width, height, transparent) in expected.items():
         path = PLUGIN / "assets" / name
@@ -326,6 +329,11 @@ def validate_assets() -> list[str]:
             height_fill = (box[3] - box[1]) / height
             if width_fill < 0.82 or height_fill < 0.70:
                 errors.append(f"asset safe fill too small: {name} {width_fill:.3f}x{height_fill:.3f}")
+        else:
+            rgba = image.convert("RGBA")
+            corners = (rgba.getpixel((0, 0))[3], rgba.getpixel((width - 1, 0))[3], rgba.getpixel((0, height - 1))[3], rgba.getpixel((width - 1, height - 1))[3])
+            if corners != (255, 255, 255, 255):
+                errors.append(f"asset must be opaque and full-bleed: {name}")
     return errors
 
 
@@ -357,7 +365,7 @@ def run_validation() -> dict[str, Any]:
     errors = sorted({error for group in checks.values() for error in group})
     return {
         "status": "pass" if not errors else "fail",
-        "candidate": "agent-churn-control 0.1.1",
+        "candidate": "agent-churn-control 0.1.2",
         "product_revision_sha256": product_revision(),
         "checks": {name: "pass" if not group else "fail" for name, group in checks.items()},
         "errors": errors,
