@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4 - 2026-08-24
+
+- Removed the leading plugin `@mention` from the second and third store prompts because OpenAI requires mention-free starter text.
+- Preserved the approved steer-first order, duplicate-cycle audit, and changed-candidate evidence-reuse wording.
+- Kept the locked full-bleed Silver Satin marketplace identity unchanged.
+
 ## 0.1.3 - 2026-08-24
 
 - Tightened all three approved anti-churn examples to 128 characters or fewer for OpenAI's store limit.

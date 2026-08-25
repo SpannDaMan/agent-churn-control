@@ -46,7 +46,7 @@ def main() -> int:
     manifest = {
         "schema_version": "1.0",
         "plugin_id": "agent-churn-control",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "release_state": "public_release_candidate",
         "aggregate_algorithm": "sha256_sorted_path_canonical_hash_bytes_v2",
         "package_payload_sha256": aggregate,
