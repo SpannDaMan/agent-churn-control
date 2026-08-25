@@ -17,7 +17,7 @@ python "<installed-plugin-path>/scripts/churn_control.py" self-test
 python "<installed-plugin-path>/scripts/churn_control.py" verify-package
 ```
 
-The installed plugin should report version `0.1.1`, developer `Orbral`, one skill, no apps, and no MCP server. Use the absolute installed plugin root shown by `codex plugin list` when invoking `scripts/churn_control.py`; do not assume the user's project contains the plugin scripts.
+The installed plugin should report version `0.1.2`, developer `Orbral`, one skill, no apps, and no MCP server. Use the absolute installed plugin root shown by `codex plugin list` when invoking `scripts/churn_control.py`; do not assume the user's project contains the plugin scripts.
 
 ## Remove
 
